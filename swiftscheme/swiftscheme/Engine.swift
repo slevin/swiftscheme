@@ -33,6 +33,7 @@ public func runIt(code: String) -> Int {
     return 3
 }
 
+
 public func readFun(code: String) -> [String] {
     var res:[String] = [String]()
     var current = ""

@@ -8,7 +8,7 @@
 
 import Cocoa
 import XCTest
-import slisp
+import swiftscheme
 
 class atomTests: XCTestCase {
 
@@ -47,6 +47,11 @@ class slispTests: XCTestCase {
         XCTAssert(a == ["+", "1", "2"])
     }
 
+    func testParseMultiple() {
+        let a = readFun("(+ 1 2 3)")
+        XCTAssertEqual(a, ["+", "1", "2", "3"])
+    }
+    
     func testParseIntoArrayNested() {
         let a = readFun("(+ 1 (+ 2 3)")
         XCTAssertEqual(a, ["+", "1", ["+", "2", "3"]])
