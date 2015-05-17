@@ -35,22 +35,46 @@ public func runIt(code: String) -> Int {
 
 
 public func readFun(code: String) -> [String] {
-    var res:[String] = [String]()
-    var current = ""
+    var listStack:[[String]] = [[String]]()
+    var currentList:[String]?
+    var currentWord = ""
     for c in code {
         if (c == "(") {
-            res = [String]()
+            /*
+
+            when ) append current and if there is something on listStack
+             add current to whats on top and make current the top
+*/
+            // if there is a current list push it on the stack
+            if currentList != nil {
+                listStack.append(currentList!)
+            }
+            // make a new list to build
+            currentList = [String]()
+            
         } else if (c == " ") {
-            res.append(current)
-            current = ""
+            if currentList != nil {
+                currentList!.append(currentWord)
+            }
+            currentWord = ""
         } else if (c == ")") {
-            res.append(current)
+            if currentList != nil {
+                currentList!.append(currentWord)
+                // if theres a stack of lists
+                if listStack.count > 0 {
+                    // pop the top, add current to that
+                    var popped = listStack.removeLast()
+                    popped.append(currentList!)
+                    // and make the top the current
+                }
+            }
+
             break;
         } else {
-            current.append(c)
+            currentWord.append(c)
         }
     }
-    return res
+    return currentList ?? [String]()
 }
 
 public func eval(sexp: [Atom]) -> Atom {
