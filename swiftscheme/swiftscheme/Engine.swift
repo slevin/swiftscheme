@@ -28,13 +28,35 @@ public func ==(a: Atom, b: Atom) -> Bool {
 }
 
 
+public enum Element : Equatable, Printable {
+    case SymbolEl(String)
+    case IntEl(Int)
+    case ListEl([Element])
+    
+    public var description : String {
+        switch self {
+        case .SymbolEl(let s): return "Symbol: \(s)"
+        case .IntEl(let s): return "Int: \(s)"
+        case .ListEl(let s):
+            let els = s.reduce("", combine: { (s1: String, s2: Element) -> String in
+                return s1 + ", " + s2.description
+            })
+            return "[\(els)]"
+        }
+    }
+}
+
+public func ==(a: Element, b: Element) -> Bool {
+    return true
+}
+
 
 public func runIt(code: String) -> Int {
     return 3
 }
 
 
-public func readFun(code: String) -> [String] {
+public func readFun(code: String) -> [Composite<String>] {
     var listStack:[[String]] = [[String]]()
     var currentList:[String]?
     var currentWord = ""
