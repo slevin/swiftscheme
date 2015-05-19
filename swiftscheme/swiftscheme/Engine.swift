@@ -32,6 +32,7 @@ public enum Element : Equatable, Printable {
     case SymbolEl(String)
     case IntEl(Int)
     case ListEl([Element])
+    case NilEl
     
     public var description : String {
         switch self {
@@ -42,6 +43,7 @@ public enum Element : Equatable, Printable {
                 return s1 + ", " + s2.description
             })
             return "[\(els)]"
+        case .NilEl: return "Nil"
         }
     }
 }
@@ -55,48 +57,57 @@ public func runIt(code: String) -> Int {
     return 3
 }
 
+public func parseWord(word: String) -> Element {
+    // try to parse as a number if that isn't anything
+    if let i = word.toInt() {
+        return .IntEl(i)
+    } else {
+        return .SymbolEl(word)
+    }
+}
 
-public func readFun(code: String) -> [Composite<String>] {
-    var listStack:[[String]] = [[String]]()
-    var currentList:[String]?
+public func readFun(code: String) -> Element {
+    var listStack:[[Element]] = [[Element]]()
+    var currentList:[Element]?
     var currentWord = ""
     for c in code {
         if (c == "(") {
-            /*
-
-            when ) append current and if there is something on listStack
-             add current to whats on top and make current the top
-*/
             // if there is a current list push it on the stack
             if currentList != nil {
                 listStack.append(currentList!)
             }
             // make a new list to build
-            currentList = [String]()
+            currentList = [Element]()
             
         } else if (c == " ") {
+            // duplication with below, whats in common?
             if currentList != nil {
-                currentList!.append(currentWord)
+                currentList!.append(parseWord(currentWord))
             }
             currentWord = ""
         } else if (c == ")") {
             if currentList != nil {
-                currentList!.append(currentWord)
+                currentList!.append(parseWord(currentWord))
                 // if theres a stack of lists
                 if listStack.count > 0 {
                     // pop the top, add current to that
-                    var popped = listStack.removeLast()
-                    popped.append(currentList!)
+                    var popped:[Element] = listStack.removeLast()
+                    popped.append(Element.ListEl(currentList!))
                     // and make the top the current
+                    currentList = popped
+                } else {
+                    return Element.ListEl(currentList!)
                 }
+            } else {
+                return Element.NilEl
             }
-
-            break;
         } else {
             currentWord.append(c)
         }
     }
-    return currentList ?? [String]()
+    // if we got here its malformed
+    // unclosed list or no list at all
+    return Element.NilEl
 }
 
 public func eval(sexp: [Atom]) -> Atom {
