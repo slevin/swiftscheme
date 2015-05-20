@@ -71,7 +71,7 @@ public func parseWord(word: String) -> Element {
     }
 }
 
-public func readFun(code: String) -> Element {
+public func parse(code: String) -> Element {
     var listStack:[[Element]] = [[Element]]()
     var currentList:[Element]?
     var currentWord = ""
@@ -92,7 +92,11 @@ public func readFun(code: String) -> Element {
             currentWord = ""
         } else if (c == ")") {
             if currentList != nil {
-                currentList!.append(parseWord(currentWord))
+                // add the current word if something is being worked on
+                if count(currentWord) != 0 {
+                    currentList!.append(parseWord(currentWord))
+                    currentWord = ""
+                }
                 // if theres a stack of lists
                 if listStack.count > 0 {
                     // pop the top, add current to that
@@ -101,6 +105,7 @@ public func readFun(code: String) -> Element {
                     // and make the top the current
                     currentList = popped
                 } else {
+                    // otherwise we are done with last list
                     return Element.ListEl(currentList!)
                 }
             } else {

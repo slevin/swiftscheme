@@ -42,57 +42,62 @@ class ElementTests: XCTestCase {
     }
 }
 
-class slispTests: XCTestCase {
+class ParsingTests: XCTestCase {
+    typealias E = Element
     
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testParseInt() {
+        let e = parseWord("1")
+        XCTAssertEqual(E.IntEl(1), e)
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    func testParseSymbol() {
+        let e = parseWord("seanrules")
+        XCTAssertEqual(E.SymbolEl("seanrules"), e)
     }
     
-    func testOnePlusTwo() {
-        let r = runIt("(+ 1 2)")
-        XCTAssert(r == 3)
+    func testParseSimpleCode() {
+        let e = parse("(+ 1 2)")
+        XCTAssertEqual(E.ListEl([E.SymbolEl("+"), E.IntEl(1), E.IntEl(2)]), e)
     }
+
+    func testParseNeseted() {
+        let e = parse("(+ 1 (+ 2 3))")
+        XCTAssertEqual(E.ListEl([E.SymbolEl("+"),
+            E.IntEl(1),
+            E.ListEl([E.SymbolEl("+"),
+                E.IntEl(2),
+                E.IntEl(3)])]), e)
+    }
+
+    // test for extra spaces
+
+    // test longer words and error cases
+    
+}
+
+class EvalTests: XCTestCase {
+    typealias E = Element
 
     /*
-    func testParseIntoArray() {
-        let a = readFun("(+ 1 2)")
-        XCTAssert(a == ["+", "1", "2"])
-    }
-
-    func testParseMultiple() {
-        let a = readFun("(+ 1 2 3)")
-        XCTAssertEqual(a, ["+", "1", "2", "3"])
-    }
     
-    func testParseIntoArrayNested() {
-        let a = readFun("(+ 1 (+ 2 3)")
-        XCTAssertEqual(a, ["+", "1", ["+", "2", "3"]])
-    }
-    */
     
-    // test for extra spaces
-        
     func testPlusEval() {
-        let s:[Atom] = [.StringAtom("+"), .IntAtom(1), .IntAtom(2)]
-        let e = eval(s)
-        XCTAssertEqual(e, .IntAtom(3))
+    let s:[Atom] = [.StringAtom("+"), .IntAtom(1), .IntAtom(2)]
+    let e = eval(s)
+    XCTAssertEqual(e, .IntAtom(3))
     }
     
     func testPlusEvalMultiple() {
-        let s:[Atom] = [.StringAtom("+"), .IntAtom(1), .IntAtom(2), .IntAtom(1)]
-        let e = eval(s)
-        XCTAssertEqual(e, .IntAtom(4))
+    let s:[Atom] = [.StringAtom("+"), .IntAtom(1), .IntAtom(2), .IntAtom(1)]
+    let e = eval(s)
+    XCTAssertEqual(e, .IntAtom(4))
     }
     
     func testMinusEval() {
-        let s:[Atom] = [.StringAtom("-"), .IntAtom(1), .IntAtom(2)]
-        let e = eval(s)
-        XCTAssertEqual(e, .IntAtom(-1))
+    let s:[Atom] = [.StringAtom("-"), .IntAtom(1), .IntAtom(2)]
+    let e = eval(s)
+    XCTAssertEqual(e, .IntAtom(-1))
     }
+    */
+    
 }
