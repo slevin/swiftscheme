@@ -10,18 +10,35 @@ import Cocoa
 import XCTest
 import swiftscheme
 
-class atomTests: XCTestCase {
-
-    func testIntAtomsEqual() {
-        XCTAssertEqual(Atom.IntAtom(0), Atom.IntAtom(0))
+class ElementTests: XCTestCase {
+    typealias E = Element
+    
+    func testIntElsEqual() {
+        XCTAssertEqual(Element.IntEl(1), Element.IntEl(1))
     }
-
-    func testDifferentIntAtomsNotEqual() {
-        XCTAssertNotEqual(Atom.IntAtom(0), Atom.IntAtom(1))
+    
+    func testDifferentIntElsNotEqual() {
+        XCTAssertNotEqual(Element.IntEl(2), Element.IntEl(1))
     }
-
-    func testDifferentAtomTypesNotEqual() {
-        XCTAssertNotEqual(Atom.StringAtom("hello"), Atom.IntAtom(1))
+    
+    func testSymbolElsEqual() {
+        XCTAssertEqual(Element.SymbolEl("a"), Element.SymbolEl("a"))
+    }
+    
+    func testDifferentSymbolElsNotEqual() {
+        XCTAssertNotEqual(E.SymbolEl("a"), E.SymbolEl("b"))
+    }
+    
+    func testLestElsEqual() {
+        XCTAssertEqual(E.ListEl([E.IntEl(1), E.SymbolEl("a")]), E.ListEl([.IntEl(1), E.SymbolEl("a")]))
+    }
+    
+    func testNestedListElsEqual() {
+        XCTAssertEqual(E.ListEl([E.ListEl([E.IntEl(1)])]), E.ListEl([E.ListEl([E.IntEl(1)])]))
+    }
+    
+    func testDifferentListElsNotEqual() {
+        XCTAssertNotEqual(E.ListEl([E.IntEl(1), E.SymbolEl("a")]), E.ListEl([.IntEl(1), E.SymbolEl("b")]))
     }
 }
 
@@ -42,6 +59,7 @@ class slispTests: XCTestCase {
         XCTAssert(r == 3)
     }
 
+    /*
     func testParseIntoArray() {
         let a = readFun("(+ 1 2)")
         XCTAssert(a == ["+", "1", "2"])
@@ -56,6 +74,7 @@ class slispTests: XCTestCase {
         let a = readFun("(+ 1 (+ 2 3)")
         XCTAssertEqual(a, ["+", "1", ["+", "2", "3"]])
     }
+    */
     
     // test for extra spaces
         

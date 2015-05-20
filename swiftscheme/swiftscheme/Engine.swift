@@ -49,7 +49,12 @@ public enum Element : Equatable, Printable {
 }
 
 public func ==(a: Element, b: Element) -> Bool {
-    return true
+    switch (a, b) {
+    case (.IntEl(let a), .IntEl(let b)): return a == b
+    case (.SymbolEl(let a), .SymbolEl(let b)): return a == b
+    case (.ListEl(let a), .ListEl(let b)): return a == b
+    default: return false
+    }
 }
 
 
