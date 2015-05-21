@@ -69,35 +69,43 @@ class ParsingTests: XCTestCase {
                 E.IntEl(3)])]), e)
     }
 
+    func testParseEmptyList() {
+        let e = parse("()")
+        XCTAssertEqual(E.ListEl([]), e)
+    }
     // test for extra spaces
 
     // test longer words and error cases
     
+    // (...)3) probably shouldn't work but probably does
 }
 
 class EvalTests: XCTestCase {
     typealias E = Element
 
-    /*
-    
-    
     func testPlusEval() {
-    let s:[Atom] = [.StringAtom("+"), .IntAtom(1), .IntAtom(2)]
-    let e = eval(s)
-    XCTAssertEqual(e, .IntAtom(3))
+        let e = parse("(+ 1 2)")
+        let r = eval(e)
+        XCTAssertEqual(E.IntEl(3), r)
     }
     
-    func testPlusEvalMultiple() {
-    let s:[Atom] = [.StringAtom("+"), .IntAtom(1), .IntAtom(2), .IntAtom(1)]
-    let e = eval(s)
-    XCTAssertEqual(e, .IntAtom(4))
+    func testPlusMultipleEval() {
+        let r = eval(parse("(+ 1 2 3)"))
+        XCTAssertEqual(E.IntEl(6), r)
+    }
+    
+    func testPlusNested() {
+        let r = eval(parse("(+ 1 (+ 2 3))"))
+        XCTAssertEqual(E.IntEl(6), r)
     }
     
     func testMinusEval() {
-    let s:[Atom] = [.StringAtom("-"), .IntAtom(1), .IntAtom(2)]
-    let e = eval(s)
-    XCTAssertEqual(e, .IntAtom(-1))
+        let r = runIt("(- 1 2)")
+        XCTAssertEqual(E.IntEl(-1), r)
     }
-    */
     
+    func testMixed() {
+        let r = runIt("(- 1 (+ 3 4))")
+        XCTAssertEqual(E.IntEl(-6), r)
+    }
 }

@@ -8,26 +8,6 @@
 
 import Foundation
 
-public enum Atom : Equatable, Printable {
-    case StringAtom(String)
-    case IntAtom(Int)
-    
-    public var description : String {
-        switch self {
-        case .StringAtom(let s): return "StringAtom: \(s)"
-        case .IntAtom(let i): return "IntAtom: \(i)"
-        }
-    }
-}
-
-public func ==(a: Atom, b: Atom) -> Bool {
-    switch (a, b) {
-    case (.IntAtom(let a), .IntAtom(let b)) where a == b: return true
-    default: return false
-    }
-}
-
-
 public enum Element : Equatable, Printable {
     case SymbolEl(String)
     case IntEl(Int)
@@ -58,8 +38,8 @@ public func ==(a: Element, b: Element) -> Bool {
 }
 
 
-public func runIt(code: String) -> Int {
-    return 3
+public func runIt(code: String) -> Element {
+    return eval(parse(code))
 }
 
 public func parseWord(word: String) -> Element {
@@ -120,30 +100,51 @@ public func parse(code: String) -> Element {
     return Element.NilEl
 }
 
-public func eval(sexp: [Atom]) -> Atom {
-    let f:Atom = first(sexp)!
-    let r = dropFirst(sexp)
-    switch (f) {
-    case .StringAtom(let s) :
-        switch (s) {
-        case "+" :
-            return reduce(r, Atom.IntAtom(0), { (a: Atom, b: Atom) -> Atom in
-                switch (a, b) {
-                case (.IntAtom(let a), .IntAtom(let b)) : return .IntAtom(a + b)
-                default: return Atom.IntAtom(0)
-                }
-            })
-        case "-" :
-            return reduce(dropFirst(r), first(r)!, { (a: Atom, b: Atom) -> Atom in
-                switch (a, b) {
-                case (.IntAtom(let a), .IntAtom(let b)) : return .IntAtom(a - b)
-                default: return Atom.IntAtom(0)
-                }
-            })
-        default :
-            return Atom.IntAtom(0)
+public func evalList(elements: [Element]) -> Element {
+    if elements.count == 0 {
+        // empty list evals as a nil
+        return .NilEl
+    } else {
+        // eval each element
+        let evaled = elements.map({ eval($0) })
+        let f = first(evaled)!
+        let rest = dropFirst(evaled)
+        // the first element should resolve as a method or error (need to do lookup)
+        switch f {
+        case .SymbolEl("+"): return plusElements(rest)
+        case .SymbolEl("-"): return minusElements(rest)
+        default: return .NilEl // probably should be an error of some sort
         }
-    default:
-        return Atom.IntAtom(0)
+    }
+}
+
+func plusElements(elements: ArraySlice<Element>) -> Element {
+    // what is no elements probably an error
+    let f = first(elements)!
+    let r = dropFirst(elements)
+    return reduce(r, f, { (a: Element, b: Element) -> Element in
+        switch (a, b) {
+        case (.IntEl(let a), .IntEl(let b)) : return .IntEl(a + b)
+        default: return .NilEl
+        }
+    })
+}
+
+func minusElements(elements: ArraySlice<Element>) -> Element {
+    // what is no elements probably an error
+    let f = first(elements)!
+    let r = dropFirst(elements)
+    return reduce(r, f, { (a: Element, b: Element) -> Element in
+        switch (a, b) {
+        case (.IntEl(let a), .IntEl(let b)) : return .IntEl(a - b)
+        default: return .NilEl
+        }
+    })
+}
+
+public func eval(sexp: Element) -> Element {
+    switch sexp {
+    case .ListEl(let elements): return evalList(elements)
+    default: return sexp
     }
 }
