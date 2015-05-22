@@ -37,6 +37,19 @@ public func ==(a: Element, b: Element) -> Bool {
     }
 }
 
+public func +(a: Element, b: Element) -> Element {
+    switch (a, b) {
+    case (.IntEl(let a), .IntEl(let b)): return .IntEl(a + b)
+    default: return .NilEl
+    }
+}
+
+public func -(a: Element, b: Element) -> Element {
+    switch (a, b) {
+    case (.IntEl(let a), .IntEl(let b)): return .IntEl(a - b)
+    default: return .NilEl
+    }
+}
 
 public func runIt(code: String) -> Element {
     return eval(parse(code))
@@ -111,35 +124,18 @@ public func evalList(elements: [Element]) -> Element {
         let rest = dropFirst(evaled)
         // the first element should resolve as a method or error (need to do lookup)
         switch f {
-        case .SymbolEl("+"): return plusElements(rest)
-        case .SymbolEl("-"): return minusElements(rest)
+        case .SymbolEl("+"): return reduceElements(rest, +)
+        case .SymbolEl("-"): return reduceElements(rest, -)
         default: return .NilEl // probably should be an error of some sort
         }
     }
 }
 
-func plusElements(elements: ArraySlice<Element>) -> Element {
+func reduceElements(elements: ArraySlice<Element>, reducer: (Element, Element) -> Element) -> Element {
     // what is no elements probably an error
     let f = first(elements)!
     let r = dropFirst(elements)
-    return reduce(r, f, { (a: Element, b: Element) -> Element in
-        switch (a, b) {
-        case (.IntEl(let a), .IntEl(let b)) : return .IntEl(a + b)
-        default: return .NilEl
-        }
-    })
-}
-
-func minusElements(elements: ArraySlice<Element>) -> Element {
-    // what is no elements probably an error
-    let f = first(elements)!
-    let r = dropFirst(elements)
-    return reduce(r, f, { (a: Element, b: Element) -> Element in
-        switch (a, b) {
-        case (.IntEl(let a), .IntEl(let b)) : return .IntEl(a - b)
-        default: return .NilEl
-        }
-    })
+    return reduce(r, f, reducer)
 }
 
 public func eval(sexp: Element) -> Element {
