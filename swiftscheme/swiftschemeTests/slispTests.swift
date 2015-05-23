@@ -12,15 +12,15 @@ import swiftscheme
 
 class ElementTests: XCTestCase {
     typealias E = Element
-    
+
     func testIntElsEqual() {
         XCTAssertEqual(Element.IntEl(1), Element.IntEl(1))
     }
-    
+
     func testDifferentIntElsNotEqual() {
         XCTAssertNotEqual(Element.IntEl(2), Element.IntEl(1))
     }
-    
+
     func testSymbolElsEqual() {
         XCTAssertEqual(Element.SymbolEl("a"), Element.SymbolEl("a"))
     }
@@ -29,6 +29,14 @@ class ElementTests: XCTestCase {
         XCTAssertNotEqual(E.SymbolEl("a"), E.SymbolEl("b"))
     }
     
+    func testBoolElsEqual() {
+        XCTAssertEqual(E.BoolEl(true), E.BoolEl(true))
+    }
+
+    func testDifferentBoolElsNotEqual() {
+        XCTAssertNotEqual(E.BoolEl(true), E.BoolEl(false))
+    }
+
     func testLestElsEqual() {
         XCTAssertEqual(E.ListEl([E.IntEl(1), E.SymbolEl("a")]), E.ListEl([.IntEl(1), E.SymbolEl("a")]))
     }
@@ -55,6 +63,16 @@ class ParsingTests: XCTestCase {
         XCTAssertEqual(E.SymbolEl("seanrules"), e)
     }
     
+    func testParseBoolFalse() {
+        let e = parseWord("#f")
+        XCTAssertEqual(E.BoolEl(false), e)
+    }
+
+    func testParseBoolTrue() {
+        let e = parseWord("#t")
+        XCTAssertEqual(E.BoolEl(true), e)
+    }
+
     func testParseSimpleCode() {
         let e = parse("(+ 1 2)")
         XCTAssertEqual(E.ListEl([E.SymbolEl("+"), E.IntEl(1), E.IntEl(2)]), e)

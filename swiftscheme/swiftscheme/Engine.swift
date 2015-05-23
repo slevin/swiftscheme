@@ -11,6 +11,7 @@ import Foundation
 public enum Element : Equatable, Printable {
     case SymbolEl(String)
     case IntEl(Int)
+    case BoolEl(Bool)
     case ListEl([Element])
     case NilEl
     
@@ -24,6 +25,7 @@ public enum Element : Equatable, Printable {
             })
             return "[\(els)]"
         case .NilEl: return "Nil"
+        case .BoolEl(let s): return s ? "#t" : "#f"
         }
     }
 }
@@ -33,6 +35,7 @@ public func ==(a: Element, b: Element) -> Bool {
     case (.IntEl(let a), .IntEl(let b)): return a == b
     case (.SymbolEl(let a), .SymbolEl(let b)): return a == b
     case (.ListEl(let a), .ListEl(let b)): return a == b
+    case (.BoolEl(let a), .BoolEl(let b)): return a == b
     default: return false
     }
 }
@@ -44,7 +47,11 @@ public func runIt(code: String) -> Element {
 
 public func parseWord(word: String) -> Element {
     // try to parse as a number if that isn't anything
-    if let i = word.toInt() {
+    if word == "#f" {
+        return .BoolEl(false)
+    } else if word == "#t" {
+        return .BoolEl(true)
+    } else if let i = word.toInt() {
         return .IntEl(i)
     } else {
         return .SymbolEl(word)
