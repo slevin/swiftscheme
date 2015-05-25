@@ -133,8 +133,22 @@ public func evalList(elements: [Element]) -> Element {
         switch f {
         case .SymbolEl("+"): return reduceElements(rest, +)
         case .SymbolEl("-"): return reduceElements(rest, -)
+        case .SymbolEl(">"): return evalGT(rest)
         default: return .NilEl // probably should be an error of some sort
         }
+    }
+}
+
+public func evalGT(elements: ArraySlice<Element>) -> Element {
+    if elements.count == 2 {
+        let e1 = elements[0]
+        let e2 = elements[1]
+        switch (e1, e2) {
+        case (.IntEl(let e1), .IntEl(let e2)): return .BoolEl(e1 > e2)
+        default: return .NilEl
+        }
+    } else {
+        return .NilEl
     }
 }
 
