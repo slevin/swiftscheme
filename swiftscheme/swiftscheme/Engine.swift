@@ -54,18 +54,19 @@ public func -(a: Element, b: Element) -> Element {
     }
 }
 
-public func >(a: Element, b: Element) -> Element {
+public func intCompare(a: Element, b: Element, comp: (Int, Int) -> Bool) -> Element {
     switch (a, b) {
-    case (.IntEl(let a), .IntEl(let b)): return .BoolEl(a > b)
+    case (.IntEl(let a), .IntEl(let b)): return .BoolEl(comp(a, b))
     default: return .NilEl
     }
 }
 
+public func >(a: Element, b: Element) -> Element {
+    return intCompare(a, b, >)
+}
+
 public func >=(a: Element, b: Element) -> Element {
-    switch (a, b) {
-    case (.IntEl(let a), .IntEl(let b)): return .BoolEl(a >= b)
-    default: return .NilEl
-    }
+    return intCompare(a, b, >=)
 }
 
 public func eq(a: Element, b: Element) -> Element {
@@ -73,17 +74,11 @@ public func eq(a: Element, b: Element) -> Element {
 }
 
 public func <(a: Element, b: Element) -> Element {
-    switch (a, b) {
-    case (.IntEl(let a), .IntEl(let b)): return .BoolEl(a < b)
-    default: return .NilEl
-    }
+    return intCompare(a, b, <)
 }
 
 public func <=(a: Element, b: Element) -> Element {
-    switch (a, b) {
-    case (.IntEl(let a), .IntEl(let b)): return .BoolEl(a <= b)
-    default: return .NilEl
-    }
+    return intCompare(a, b, <=)
 }
 
 public func runIt(code: String) -> Element {
