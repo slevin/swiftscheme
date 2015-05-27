@@ -54,6 +54,20 @@ public func -(a: Element, b: Element) -> Element {
     }
 }
 
+public func >(a: Element, b: Element) -> Element {
+    switch (a, b) {
+    case (.IntEl(let a), .IntEl(let b)): return .BoolEl(a > b)
+    default: return .NilEl
+    }
+}
+
+public func >=(a: Element, b: Element) -> Element {
+    switch (a, b) {
+    case (.IntEl(let a), .IntEl(let b)): return .BoolEl(a >= b)
+    default: return .NilEl
+    }
+}
+
 public func runIt(code: String) -> Element {
     return eval(parse(code))
 }
@@ -133,20 +147,18 @@ public func evalList(elements: [Element]) -> Element {
         switch f {
         case .SymbolEl("+"): return reduceElements(rest, +)
         case .SymbolEl("-"): return reduceElements(rest, -)
-        case .SymbolEl(">"): return evalGT(rest)
+        case .SymbolEl(">"): return evalTwo(rest, >)
+        case .SymbolEl(">="): return evalTwo(rest, >=)
         default: return .NilEl // probably should be an error of some sort
         }
     }
 }
 
-public func evalGT(elements: ArraySlice<Element>) -> Element {
+public func evalTwo(elements: ArraySlice<Element>, reducer: (Element, Element) -> Element) -> Element {
     if elements.count == 2 {
         let e1 = elements[0]
         let e2 = elements[1]
-        switch (e1, e2) {
-        case (.IntEl(let e1), .IntEl(let e2)): return .BoolEl(e1 > e2)
-        default: return .NilEl
-        }
+        return reducer(e1, e2)
     } else {
         return .NilEl
     }
