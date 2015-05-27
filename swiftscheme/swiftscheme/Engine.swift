@@ -68,6 +68,24 @@ public func >=(a: Element, b: Element) -> Element {
     }
 }
 
+public func eq(a: Element, b: Element) -> Element {
+    return Element.BoolEl(a == b)
+}
+
+public func <(a: Element, b: Element) -> Element {
+    switch (a, b) {
+    case (.IntEl(let a), .IntEl(let b)): return .BoolEl(a < b)
+    default: return .NilEl
+    }
+}
+
+public func <=(a: Element, b: Element) -> Element {
+    switch (a, b) {
+    case (.IntEl(let a), .IntEl(let b)): return .BoolEl(a <= b)
+    default: return .NilEl
+    }
+}
+
 public func runIt(code: String) -> Element {
     return eval(parse(code))
 }
@@ -149,6 +167,9 @@ public func evalList(elements: [Element]) -> Element {
         case .SymbolEl("-"): return reduceElements(rest, -)
         case .SymbolEl(">"): return evalTwo(rest, >)
         case .SymbolEl(">="): return evalTwo(rest, >=)
+        case .SymbolEl("="): return evalTwo(rest, eq)
+        case .SymbolEl("<"): return evalTwo(rest, <)
+        case .SymbolEl("<="): return evalTwo(rest, <=)
         default: return .NilEl // probably should be an error of some sort
         }
     }

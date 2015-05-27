@@ -136,4 +136,20 @@ class EvalTests: XCTestCase {
         let r = runIt("(>= 4 4)")
         XCTAssertEqual(E.BoolEl(true), r);
     }
+    
+    func testEq() {
+        let r = runIt("(= 4 4)")
+        XCTAssertEqual(E.BoolEl(true), r)
+    }
+    
+    func testLT() {
+        let r = runIt("(< 4 3)")
+        XCTAssertEqual(E.BoolEl(false), r)
+    }
+    
+    func testLTE() {
+        let r = runIt("(<= 4 4)")
+        XCTAssertEqual(E.BoolEl(true), r)
+    }
+
 }
