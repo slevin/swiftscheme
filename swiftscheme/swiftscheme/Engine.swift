@@ -8,11 +8,27 @@
 
 import Foundation
 
-public struct Env {
+public class Env {
+    var contents: [Element: Element]
     
+    public init() {
+        self.contents = [Element: Element]()
+    }
+    
+    public func store(key: Element, val: Element) {
+        self.contents[key] = val;
+    }
+    
+    public func lookup(key: Element) -> Element {
+        if let v = self.contents[key] {
+            return v
+        } else {
+            return Element.NilEl
+        }
+    }
 }
 
-public enum Element : Equatable, Printable {
+public enum Element : Printable, Hashable {
     case SymbolEl(String)
     case IntEl(Int)
     case BoolEl(Bool)
@@ -32,6 +48,8 @@ public enum Element : Equatable, Printable {
         case .BoolEl(let s): return s ? "#t" : "#f"
         }
     }
+    
+    public var hashValue: Int { return self.description.hashValue }
 }
 
 public func ==(a: Element, b: Element) -> Bool {
@@ -40,6 +58,7 @@ public func ==(a: Element, b: Element) -> Bool {
     case (.SymbolEl(let a), .SymbolEl(let b)): return a == b
     case (.ListEl(let a), .ListEl(let b)): return a == b
     case (.BoolEl(let a), .BoolEl(let b)): return a == b
+    case (.NilEl, .NilEl): return true
     default: return false
     }
 }

@@ -48,6 +48,28 @@ class ElementTests: XCTestCase {
     func testDifferentListElsNotEqual() {
         XCTAssertNotEqual(E.ListEl([E.IntEl(1), E.SymbolEl("a")]), E.ListEl([.IntEl(1), E.SymbolEl("b")]))
     }
+    
+    func testNilEqual() {
+        XCTAssertEqual(E.NilEl, E.NilEl)
+    }
+}
+
+class EnvTests: XCTestCase {
+    typealias E = Element
+    
+    func testAddLookup() {
+        let e = Env()
+        e.store(E.SymbolEl("a"), val: E.IntEl(1))
+        let el = e.lookup(.SymbolEl("a"))
+        XCTAssertEqual(E.IntEl(1), el)
+    }
+    
+    func testNotFound() {
+        let e = Env()
+        e.store(Element.SymbolEl("a"), val: Element.IntEl(1))
+        let el = e.lookup(.SymbolEl("b"))
+        XCTAssertEqual(E.NilEl, el)
+    }
 }
 
 class ParsingTests: XCTestCase {
