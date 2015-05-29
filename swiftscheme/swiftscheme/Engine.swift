@@ -8,6 +8,10 @@
 
 import Foundation
 
+public struct Env {
+    
+}
+
 public enum Element : Equatable, Printable {
     case SymbolEl(String)
     case IntEl(Int)
@@ -82,7 +86,8 @@ public func <=(a: Element, b: Element) -> Element {
 }
 
 public func runIt(code: String) -> Element {
-    return eval(parse(code))
+    let env = Env()
+    return eval(parse(code), env)
 }
 
 public func parseWord(word: String) -> Element {
@@ -147,13 +152,13 @@ public func parse(code: String) -> Element {
     return Element.NilEl
 }
 
-public func evalList(elements: [Element]) -> Element {
+public func evalList(elements: [Element], env: Env) -> Element {
     if elements.count == 0 {
         // empty list evals as a nil
         return .NilEl
     } else {
         // eval each element
-        let evaled = elements.map({ eval($0) })
+        let evaled = elements.map({ eval($0, env) })
         let f = first(evaled)!
         let rest = dropFirst(evaled)
         // the first element should resolve as a method or error (need to do lookup)
@@ -161,7 +166,7 @@ public func evalList(elements: [Element]) -> Element {
         case .SymbolEl("+"): return reduceElements(rest, +)
         case .SymbolEl("-"): return reduceElements(rest, -)
         case .SymbolEl(">"): return evalTwo(rest, >)
-        case .SymbolEl(">="): return evalTwo(rest, >=)
+        case .SymbolEl(">="): return evalTwo(rest, >=) // probably all these could be macros on < and =
         case .SymbolEl("="): return evalTwo(rest, eq)
         case .SymbolEl("<"): return evalTwo(rest, <)
         case .SymbolEl("<="): return evalTwo(rest, <=)
@@ -187,9 +192,9 @@ func reduceElements(elements: ArraySlice<Element>, reducer: (Element, Element) -
     return reduce(r, f, reducer)
 }
 
-public func eval(sexp: Element) -> Element {
+public func eval(sexp: Element, env: Env) -> Element {
     switch sexp {
-    case .ListEl(let elements): return evalList(elements)
+    case .ListEl(let elements): return evalList(elements, env)
     default: return sexp
     }
 }

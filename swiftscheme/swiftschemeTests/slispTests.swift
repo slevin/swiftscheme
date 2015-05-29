@@ -102,18 +102,17 @@ class EvalTests: XCTestCase {
     typealias E = Element
 
     func testPlusEval() {
-        let e = parse("(+ 1 2)")
-        let r = eval(e)
+        let r = runIt("(+ 1 2)")
         XCTAssertEqual(E.IntEl(3), r)
     }
     
     func testPlusMultipleEval() {
-        let r = eval(parse("(+ 1 2 3)"))
+        let r = runIt("(+ 1 2 3)")
         XCTAssertEqual(E.IntEl(6), r)
     }
     
     func testPlusNested() {
-        let r = eval(parse("(+ 1 (+ 2 3))"))
+        let r = runIt("(+ 1 (+ 2 3))")
         XCTAssertEqual(E.IntEl(6), r)
     }
     
