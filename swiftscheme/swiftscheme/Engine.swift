@@ -15,8 +15,8 @@ public class Env {
         self.contents = [Element: Element]()
     }
     
-    public func store(key: Element, val: Element) {
-        self.contents[key] = val;
+    public func store(key: Element, value: Element) {
+        self.contents[key] = value;
     }
     
     public func lookup(key: Element) -> Element {
@@ -189,7 +189,7 @@ public func evalList(elements: [Element], env: Env) -> Element {
         case .SymbolEl("="): return evalTwo(rest, eq)
         case .SymbolEl("<"): return evalTwo(rest, <)
         case .SymbolEl("<="): return evalTwo(rest, <=)
-        default: return .NilEl // probably should be an error of some sort
+        default: return .NilEl
         }
     }
 }
@@ -214,6 +214,13 @@ func reduceElements(elements: ArraySlice<Element>, reducer: (Element, Element) -
 public func eval(sexp: Element, env: Env) -> Element {
     switch sexp {
     case .ListEl(let elements): return evalList(elements, env)
+    case .SymbolEl:
+        let r = env.lookup(sexp)
+        if r == .NilEl {
+            return sexp
+        } else {
+            return r
+        }
     default: return sexp
     }
 }

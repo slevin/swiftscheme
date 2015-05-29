@@ -59,17 +59,27 @@ class EnvTests: XCTestCase {
     
     func testAddLookup() {
         let e = Env()
-        e.store(E.SymbolEl("a"), val: E.IntEl(1))
+        e.store(E.SymbolEl("a"), value: E.IntEl(1))
         let el = e.lookup(.SymbolEl("a"))
         XCTAssertEqual(E.IntEl(1), el)
     }
     
     func testNotFound() {
         let e = Env()
-        e.store(Element.SymbolEl("a"), val: Element.IntEl(1))
+        e.store(Element.SymbolEl("a"), value: Element.IntEl(1))
         let el = e.lookup(.SymbolEl("b"))
         XCTAssertEqual(E.NilEl, el)
     }
+
+    func testLookup() {
+        let p = parse("(+ a b)")
+        let e = Env()
+        e.store(E.SymbolEl("a"), value: Element.IntEl(1))
+        e.store(E.SymbolEl("b"), value: Element.IntEl(2))
+        let r = eval(p, e)
+        XCTAssertEqual(E.IntEl(3), r)
+    }
+
 }
 
 class ParsingTests: XCTestCase {
