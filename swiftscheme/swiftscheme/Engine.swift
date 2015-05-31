@@ -189,9 +189,14 @@ public func evalList(elements: [Element], env: Env) -> Element {
         case .SymbolEl("="): return evalTwo(rest, eq)
         case .SymbolEl("<"): return evalTwo(rest, <)
         case .SymbolEl("<="): return evalTwo(rest, <=)
+        case .SymbolEl("define"): return storeInEnv(rest, env)
         default: return .NilEl
         }
     }
+}
+
+public func storeInEnv(elements: ArraySlice<Element>, env: Env) -> Element {
+    
 }
 
 public func evalTwo(elements: ArraySlice<Element>, reducer: (Element, Element) -> Element) -> Element {
@@ -215,6 +220,8 @@ public func eval(sexp: Element, env: Env) -> Element {
     switch sexp {
     case .ListEl(let elements): return evalList(elements, env)
     case .SymbolEl:
+// could do a lookup or return self function here
+// need more explaining methods
         let r = env.lookup(sexp)
         if r == .NilEl {
             return sexp

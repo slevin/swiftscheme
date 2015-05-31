@@ -79,6 +79,13 @@ class EnvTests: XCTestCase {
         let r = eval(p, e)
         XCTAssertEqual(E.IntEl(3), r)
     }
+    
+    func testDefine() {
+        let e = Env()
+        let r = eval(parse("(define a 1)"), e)
+        let stored = e.lookup(E.SymbolEl("a"))
+        XCTAssertEqual(E.IntEl(1), stored)
+    }
 
 }
 
