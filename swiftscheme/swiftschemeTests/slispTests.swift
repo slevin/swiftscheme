@@ -122,6 +122,11 @@ class ParsingTests: XCTestCase {
         XCTAssertEqual(E.ListEl([E.SymbolEl("+"), E.IntEl(1), E.IntEl(2)]), e)
     }
 
+    func testParseAfterList() {
+        let e = parse("(a (b c d) e)")
+        XCTAssertEqual(E.ListEl([E.SymbolEl("a"), E.ListEl([E.SymbolEl("b"),
+            E.SymbolEl("c"), E.SymbolEl("d")]), E.SymbolEl("e")]), e)
+    }
     func testParseNeseted() {
         let e = parse("(+ 1 (+ 2 3))")
         XCTAssertEqual(E.ListEl([E.SymbolEl("+"),
@@ -195,4 +200,13 @@ class EvalTests: XCTestCase {
         XCTAssertEqual(E.BoolEl(true), r)
     }
 
+    func testIfTrue() {
+        let r = runIt("(if #t (+ 1 3) (+ 1 4))")
+        XCTAssertEqual(E.IntEl(4), r)
+    }
+    
+    func testIfFalse() {
+        let r = runIt("(if #f (+ 1 3) (+ 1 4))")
+        XCTAssertEqual(E.IntEl(5), r)
+    }
 }

@@ -138,7 +138,9 @@ public func parse(code: String) -> Element {
         } else if (c == " ") {
             // duplication with below, whats in common?
             if currentList != nil {
-                currentList!.append(parseWord(currentWord))
+                if count(currentWord) != 0 {
+                    currentList!.append(parseWord(currentWord))
+                }
             }
             currentWord = ""
         } else if (c == ")") {
@@ -177,9 +179,14 @@ public func evalList(elements: [Element], env: Env) -> Element {
         return .NilEl
     } else {
         // eval each element
-        let evaled = elements.map({ eval($0, env) })
-        let f = first(evaled)!
-        let rest = dropFirst(evaled)
+        // let evaled = elements.map({ eval($0, env) })
+        let f = eval(first(elements)!, env)
+        let restUneval = dropFirst(elements)
+        if f == .SymbolEl("if") {
+            return evalIf(restUneval, env)
+        }
+        
+        let rest = restUneval.map({ eval($0, env) })
         // the first element should resolve as a method or error (need to do lookup)
         switch f {
         case .SymbolEl("+"): return reduceElements(rest, +)
@@ -191,6 +198,20 @@ public func evalList(elements: [Element], env: Env) -> Element {
         case .SymbolEl("<="): return evalTwo(rest, <=)
         case .SymbolEl("define"): return storeInEnv(rest, env)
         default: return .NilEl
+        }
+    }
+}
+
+public func evalIf(elements: ArraySlice<Element>, env: Env)  -> Element {
+    if elements.count != 3 {
+        return .NilEl
+    } else {
+        if elements[0] == .BoolEl(true) {
+            return eval(elements[1], env)
+        } else if elements[0] == .BoolEl(false) {
+            return eval(elements[2], env)
+        } else {
+            return .NilEl
         }
     }
 }
