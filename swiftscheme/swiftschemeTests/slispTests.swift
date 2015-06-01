@@ -87,6 +87,11 @@ class EnvTests: XCTestCase {
         XCTAssertEqual(E.IntEl(1), stored)
     }
 
+    // should check define against non symbol parameter
+    // whats the point in storing an int to an int when
+    // I only check against the symbol
+    
+    
 }
 
 class ParsingTests: XCTestCase {

@@ -196,7 +196,12 @@ public func evalList(elements: [Element], env: Env) -> Element {
 }
 
 public func storeInEnv(elements: ArraySlice<Element>, env: Env) -> Element {
-    
+    if elements.count == 2 {
+        env.store(elements[0], value: elements[1])
+        return elements[1]
+    } else {
+        return .NilEl
+    }
 }
 
 public func evalTwo(elements: ArraySlice<Element>, reducer: (Element, Element) -> Element) -> Element {
