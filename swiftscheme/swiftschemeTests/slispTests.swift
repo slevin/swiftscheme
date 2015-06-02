@@ -209,4 +209,15 @@ class EvalTests: XCTestCase {
         let r = runIt("(if #f (+ 1 3) (+ 1 4))")
         XCTAssertEqual(E.IntEl(5), r)
     }
+    
+    func testProgn() {
+        // multiline statements
+        let r = runIt("(progn (define a 3) (+ 1 a))")
+        XCTAssertEqual(E.IntEl(4), r)
+    }
+    
+    func testPrognMulti() {
+        let r = runIt("(progn (define a 3) (+ 1 a) (+ 5 6))")
+        XCTAssertEqual(E.IntEl(11), r)
+    }
 }

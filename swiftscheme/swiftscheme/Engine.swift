@@ -182,10 +182,15 @@ public func evalList(elements: [Element], env: Env) -> Element {
         // let evaled = elements.map({ eval($0, env) })
         let f = eval(first(elements)!, env)
         let restUneval = dropFirst(elements)
+        
+        // pre eval functions
         if f == .SymbolEl("if") {
             return evalIf(restUneval, env)
+        } else if f == .SymbolEl("progn") {
+            return evalProgn(restUneval, env)
         }
         
+        // post eval functions
         let rest = restUneval.map({ eval($0, env) })
         // the first element should resolve as a method or error (need to do lookup)
         switch f {
@@ -200,6 +205,15 @@ public func evalList(elements: [Element], env: Env) -> Element {
         default: return .NilEl
         }
     }
+}
+
+public func evalProgn(elements: ArraySlice<Element>, env: Env) -> Element {
+    var e: Element = .NilEl
+    for (idx, val) in enumerate(elements) {
+        e = eval(val, env)
+    }
+    // return last value
+    return e
 }
 
 public func evalIf(elements: ArraySlice<Element>, env: Env)  -> Element {
