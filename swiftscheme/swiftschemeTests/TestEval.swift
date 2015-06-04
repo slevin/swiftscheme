@@ -85,4 +85,8 @@ class TestEval: XCTestCase {
         XCTAssertEqual(E.IntEl(11), r)
     }
 
+    func testLet() {
+        let r = runIt("(let ((a 1) (b 2)) (+ a b))")
+        XCTAssertEqual(E.IntEl(3), r)
+    }
 }

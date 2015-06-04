@@ -28,6 +28,8 @@ public func evalList(elements: [Element], env: Env) -> Element {
             return evalIf(restUneval, env)
         } else if f == .SymbolEl("progn") {
             return evalProgn(restUneval, env)
+        } else if f == .SymbolEl("let") {
+            return evalLet(restUneval, env)
         }
         
         // post eval functions
@@ -44,6 +46,33 @@ public func evalList(elements: [Element], env: Env) -> Element {
         case .SymbolEl("define"): return storeInEnv(rest, env)
         default: return .NilEl
         }
+    }
+}
+
+public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
+    // redefine let as a progn of defines and the final function
+    if elements.count == 2 {
+        var rewritten: [Element] = [Element]()
+        rewritten.append(.SymbolEl("progn"))
+        switch elements[0] {
+        case .ListEl(let defines):
+            for def in defines {
+                switch def {
+                case .ListEl(let pair):
+                    if pair.count == 2 {
+                        rewritten.append(.ListEl([.SymbolEl("define"), pair[0], pair[1]]))
+                    } else {
+                        return .NilEl // each subparam must be pair
+                    }
+                default: return .NilEl // each subparam must be list
+                }
+            }
+        default: return .NilEl // first param must be list
+        }
+        rewritten.append(elements[1])
+        return eval(.ListEl(rewritten), env) // eval new built list
+    } else {
+        return .NilEl // invalid let params
     }
 }
 
