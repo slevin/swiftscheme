@@ -89,4 +89,10 @@ class TestEval: XCTestCase {
         let r = runIt("(let ((a 1) (b 2)) (+ a b))")
         XCTAssertEqual(E.IntEl(3), r)
     }
+    
+    func testNestedLets() {
+        // lets create nested environemnts
+        let r = runIt("(let ((a 1)) (+ (let ((a 2) (b 3)) (+ a b)) a))")
+        XCTAssertEqual(E.IntEl(6), r)
+    }
 }

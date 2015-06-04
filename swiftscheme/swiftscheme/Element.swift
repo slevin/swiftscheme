@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Element : Printable, Hashable {
+public enum Element : Printable, Hashable, DebugPrintable {
     case SymbolEl(String)
     case IntEl(Int)
     case BoolEl(Bool)
@@ -28,6 +28,8 @@ public enum Element : Printable, Hashable {
         case .BoolEl(let s): return s ? "#t" : "#f"
         }
     }
+    
+    public var debugDescription: String { return self.description }
     
     public var hashValue: Int { return self.description.hashValue }
 }
