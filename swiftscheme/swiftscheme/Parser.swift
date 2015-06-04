@@ -21,54 +21,68 @@ public func parseWord(word: String) -> Element {
     }
 }
 
-public func parse(code: String) -> Element {
+class ParseAccumulator {
     var listStack:[[Element]] = [[Element]]()
     var currentList:[Element]?
+    
+    func decendList() {
+        // if there is a current list push it on the stack
+        if currentList != nil {
+            self.listStack.append(currentList!)
+        }
+        // make a new list to build
+        self.currentList = [Element]()
+    }
+    
+    func ascendList() {
+        if currentList != nil {
+            // if theres a stack of lists
+            if listStack.count > 0 {
+                // pop the top, add current to that
+                var popped:[Element] = listStack.removeLast()
+                popped.append(Element.ListEl(currentList!))
+                // and make the top the current
+                currentList = popped
+            }
+        }
+    }
+    
+    func completeWord(word: String) {
+        if self.currentList != nil {
+            // don't add nothing
+            if count(word) != 0 {
+                self.currentList!.append(parseWord(word))
+            }
+        }
+    }
+    
+    func toElement() -> Element {
+        if currentList != nil {
+            return Element.ListEl(currentList!)
+        } else {
+            return Element.NilEl
+        }
+    }
+}
+
+public func parse(code: String) -> Element {
+    var accumulator = ParseAccumulator()
     var currentWord = ""
     for c in code {
         if (c == "(") {
-            // if there is a current list push it on the stack
-            if currentList != nil {
-                listStack.append(currentList!)
-            }
-            // make a new list to build
-            currentList = [Element]()
-            
+            accumulator.decendList()
         } else if (c == " ") {
-            // duplication with below, whats in common?
-            if currentList != nil {
-                if count(currentWord) != 0 {
-                    currentList!.append(parseWord(currentWord))
-                }
-            }
+            accumulator.completeWord(currentWord)
             currentWord = ""
         } else if (c == ")") {
-            if currentList != nil {
-                // add the current word if something is being worked on
-                if count(currentWord) != 0 {
-                    currentList!.append(parseWord(currentWord))
-                    currentWord = ""
-                }
-                // if theres a stack of lists
-                if listStack.count > 0 {
-                    // pop the top, add current to that
-                    var popped:[Element] = listStack.removeLast()
-                    popped.append(Element.ListEl(currentList!))
-                    // and make the top the current
-                    currentList = popped
-                } else {
-                    // otherwise we are done with last list
-                    return Element.ListEl(currentList!)
-                }
-            } else {
-                return Element.NilEl
-            }
+            accumulator.completeWord(currentWord)
+            currentWord = ""
+            accumulator.ascendList()
         } else {
             currentWord.append(c)
         }
     }
-    // if we got here its malformed
-    // unclosed list or no list at all
-    return Element.NilEl
+    
+    return accumulator.toElement()
 }
 
