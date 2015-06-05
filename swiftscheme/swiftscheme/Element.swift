@@ -20,10 +20,16 @@ public enum Element : Printable, Hashable, DebugPrintable {
         case .SymbolEl(let s): return "Symbol: \(s)"
         case .IntEl(let s): return "Int: \(s)"
         case .ListEl(let s):
-            let els = s.reduce("", combine: { (s1: String, s2: Element) -> String in
-                return s1 + ", " + s2.description
-            })
-            return "[\(els)]"
+            if s.count == 0 {
+                return "[]"
+            } else {
+                let fst = first(s)!
+                let rst = dropFirst(s)
+                let els = rst.reduce(fst.description, combine: { (s1: String, s2: Element) -> String in
+                    return s1 + ", " + s2.description
+                })
+                return "[\(els)]"
+            }
         case .NilEl: return "Nil"
         case .BoolEl(let s): return s ? "#t" : "#f"
         }
