@@ -13,6 +13,7 @@ public enum Element : Printable, Hashable, DebugPrintable {
     case IntEl(Int)
     case BoolEl(Bool)
     case ListEl([Element])
+    case ErrEl(String)
     case NilEl
     
     public var description : String {
@@ -32,12 +33,20 @@ public enum Element : Printable, Hashable, DebugPrintable {
             }
         case .NilEl: return "Nil"
         case .BoolEl(let s): return s ? "#t" : "#f"
+        case .ErrEl(let s): return "Error: \(s)"
         }
     }
     
     public var debugDescription: String { return self.description }
     
     public var hashValue: Int { return self.description.hashValue }
+    
+    public var isError: Bool {
+        switch self {
+        case .ErrEl: return true
+        default: return false
+        }
+    }
 }
 
 public func ==(a: Element, b: Element) -> Bool {
@@ -54,21 +63,21 @@ public func ==(a: Element, b: Element) -> Bool {
 public func +(a: Element, b: Element) -> Element {
     switch (a, b) {
     case (.IntEl(let a), .IntEl(let b)): return .IntEl(a + b)
-    default: return .NilEl
+    default: return .ErrEl("Cannot apply \"+\" to \(a) and \(b)")
     }
 }
 
 public func -(a: Element, b: Element) -> Element {
     switch (a, b) {
     case (.IntEl(let a), .IntEl(let b)): return .IntEl(a - b)
-    default: return .NilEl
+    default: return .ErrEl("Cannot apply \"-\" to \(a) and \(b)")
     }
 }
 
 public func intCompare(a: Element, b: Element, comp: (Int, Int) -> Bool) -> Element {
     switch (a, b) {
     case (.IntEl(let a), .IntEl(let b)): return .BoolEl(comp(a, b))
-    default: return .NilEl
+    default: return .ErrEl("Cannot compare \(a) to \(b)")
     }
 }
 

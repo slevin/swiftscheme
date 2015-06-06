@@ -56,4 +56,32 @@ class ElementTests: XCTestCase {
     func testListPrintsNicely() {
         XCTAssertEqual(E.ListEl([E.IntEl(1), E.IntEl(2)]).description, "[\(E.IntEl(1)), \(E.IntEl(2))]")
     }
+    
+    func testErrorIsError() {
+        XCTAssertTrue(E.ErrEl("err").isError)
+    }
+    
+    func testIntIsNotError() {
+        XCTAssertFalse(E.IntEl(1).isError)
+    }
+
+    func testAddWorks() {
+        XCTAssertEqual(E.IntEl(1) + E.IntEl(1), E.IntEl(2))
+    }
+    
+    func testAddWrongTypesIsError() {
+        XCTAssert((E.IntEl(1) + E.SymbolEl("a")).isError)
+    }
+    
+    func testMinusWorks() {
+        XCTAssertEqual(E.IntEl(1) - E.IntEl(2), E.IntEl(-1))
+    }
+    
+    func testMinusWrongTypesIsError() {
+        XCTAssertTrue((E.SymbolEl("a") - E.SymbolEl("b")).isError)
+    }
+    
+    func testCompareWrongTypesIsError() {
+        XCTAssertTrue((E.SymbolEl("a") > E.IntEl(5)).isError)
+    }
 }
