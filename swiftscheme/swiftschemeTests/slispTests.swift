@@ -43,6 +43,15 @@ class EnvTests: XCTestCase {
         XCTAssertEqual(E.IntEl(1), stored)
     }
 
+    func testNestedEnvs() {
+        // value defined in parent is visible
+        let e1 = Env()
+        e1.store(E.SymbolEl("a"), value: E.IntEl(1))
+        let e2 = Env(parent: e1)
+        let r = eval(parse("(+ a 2)"), e2)
+        XCTAssertEqual(E.IntEl(3), r)
+    }
+    
     // should check define against non symbol parameter
     // whats the point in storing an int to an int when
     // I only check against the symbol

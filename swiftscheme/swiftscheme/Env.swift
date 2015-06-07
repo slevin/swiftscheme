@@ -10,9 +10,15 @@ import Foundation
 
 public class Env {
     var contents: [Element: Element]
+    var parent: Env?
     
     public init() {
         self.contents = [Element: Element]()
+    }
+
+    public init(parent: Env) {
+        self.contents = [Element: Element]()
+        self.parent = parent
     }
     
     public func store(key: Element, value: Element) {
@@ -22,6 +28,8 @@ public class Env {
     public func lookup(key: Element) -> Element {
         if let v = self.contents[key] {
             return v
+        } else if self.parent != nil {
+            return self.parent!.lookup(key)
         } else {
             return Element.NilEl
         }
