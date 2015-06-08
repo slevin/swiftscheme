@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Env {
+public class Env: Printable {
     var contents: [Element: Element]
     var parent: Env?
     
@@ -33,6 +33,14 @@ public class Env {
         } else {
             return Element.NilEl
         }
+    }
+    
+    public var description : String {
+        var parentString = "None"
+        if self.parent != nil {
+            parentString = "\(self.parent!.description)"
+        }
+        return "Contents: \(self.contents.description)\nParent: \(parentString)"
     }
 }
 
