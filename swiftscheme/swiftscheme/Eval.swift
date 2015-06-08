@@ -52,6 +52,7 @@ public func evalList(elements: [Element], env: Env) -> Element {
 public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
     // redefine let as a progn of defines and the final function
     if elements.count == 2 {
+        let newEnv = Env(parent: env)
         var rewritten: [Element] = [Element]()
         rewritten.append(.SymbolEl("progn"))
         switch elements[0] {
@@ -70,7 +71,7 @@ public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
         default: return .NilEl // first param must be list
         }
         rewritten.append(elements[1])
-        return eval(.ListEl(rewritten), env) // eval new built list
+        return eval(.ListEl(rewritten), newEnv) // eval new built list
     } else {
         return .NilEl // invalid let params
     }
