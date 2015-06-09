@@ -30,6 +30,8 @@ public func evalList(elements: [Element], env: Env) -> Element {
             return evalProgn(restUneval, env)
         } else if f == .SymbolEl("let") {
             return evalLet(restUneval, env)
+        } else if f == .SymbolEl("define") {
+            return storeInEnv(restUneval, env)
         }
         
         // post eval functions
@@ -43,7 +45,6 @@ public func evalList(elements: [Element], env: Env) -> Element {
         case .SymbolEl("="): return evalTwo(rest, eq)
         case .SymbolEl("<"): return evalTwo(rest, <)
         case .SymbolEl("<="): return evalTwo(rest, <=)
-        case .SymbolEl("define"): return storeInEnv(rest, env)
         default: return .NilEl
         }
     }
@@ -102,7 +103,7 @@ public func evalIf(elements: ArraySlice<Element>, env: Env)  -> Element {
 
 public func storeInEnv(elements: ArraySlice<Element>, env: Env) -> Element {
     if elements.count == 2 {
-        env.store(elements[0], value: elements[1])
+        env.store(elements[0], value: eval(elements[1], env))
         return elements[1]
     } else {
         return .NilEl
