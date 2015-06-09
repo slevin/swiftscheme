@@ -84,4 +84,5 @@ class ElementTests: XCTestCase {
     func testCompareWrongTypesIsError() {
         XCTAssertTrue((E.SymbolEl("a") > E.IntEl(5)).isError)
     }
+    
 }

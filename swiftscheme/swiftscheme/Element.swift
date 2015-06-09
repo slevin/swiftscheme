@@ -8,12 +8,25 @@
 
 import Foundation
 
+public class FunctionData : Printable {
+    public var body: Element
+    
+    public init(body: Element) {
+        self.body = body
+    }
+    
+    public var description : String {
+        return body.description
+    }
+}
+
 public enum Element : Printable, Hashable, DebugPrintable {
     case SymbolEl(String)
     case IntEl(Int)
     case BoolEl(Bool)
     case ListEl([Element])
     case ErrEl(String)
+    case FunEl(FunctionData)
     case NilEl
     
     public var description : String {
@@ -34,6 +47,7 @@ public enum Element : Printable, Hashable, DebugPrintable {
         case .NilEl: return "Nil"
         case .BoolEl(let s): return s ? "#t" : "#f"
         case .ErrEl(let s): return "Error: \(s)"
+        case .FunEl(let s): return "Fun(\(s))"
         }
     }
     
@@ -44,6 +58,13 @@ public enum Element : Printable, Hashable, DebugPrintable {
     public var isError: Bool {
         switch self {
         case .ErrEl: return true
+        default: return false
+        }
+    }
+    
+    public var isFun: Bool {
+        switch self {
+        case .FunEl: return true
         default: return false
         }
     }

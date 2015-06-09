@@ -32,6 +32,8 @@ public func evalList(elements: [Element], env: Env) -> Element {
             return evalLet(restUneval, env)
         } else if f == .SymbolEl("define") {
             return storeInEnv(restUneval, env)
+        } else if f == .SymbolEl("lambda") {
+            return evalLambda(restUneval, env)
         }
         
         // post eval functions
@@ -47,6 +49,14 @@ public func evalList(elements: [Element], env: Env) -> Element {
         case .SymbolEl("<="): return evalTwo(rest, <=)
         default: return .NilEl
         }
+    }
+}
+
+public func evalLambda(elements: ArraySlice<Element>, env: Env) -> Element {
+    if elements.count == 2 {
+        return .FunEl(FunctionData(body: Element.NilEl))
+    } else {
+
     }
 }
 

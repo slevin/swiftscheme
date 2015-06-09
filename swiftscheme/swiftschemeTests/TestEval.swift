@@ -95,4 +95,14 @@ class TestEval: XCTestCase {
         let r = runIt("(let ((a 1)) (+ (let ((a 2) (b 3)) (+ a b)) a))")
         XCTAssertEqual(E.IntEl(6), r)
     }
+    
+    func testLambdaReturnsFunEl() {
+        let r = runIt("(lambda () 1)")
+        XCTAssertEqual(E.FunEl(FunctionData(body: E.IntEl(1))), r)
+    }
+    
+    func testEvalFunRunsIt() {
+        let r = runIt("((lambda () 1))")
+        XCTAssertEqual(E.IntEl(1), r)
+    }
 }
