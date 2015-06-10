@@ -40,6 +40,7 @@ public func evalList(elements: [Element], env: Env) -> Element {
         let rest = restUneval.map({ eval($0, env) })
         // the first element should resolve as a method or error (need to do lookup)
         switch f {
+        case .FunEl(let funData): return eval(funData.body, env) // eval function
         case .SymbolEl("+"): return reduceElements(rest, +)
         case .SymbolEl("-"): return reduceElements(rest, -)
         case .SymbolEl(">"): return evalTwo(rest, >)
