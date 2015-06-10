@@ -105,4 +105,17 @@ class TestEval: XCTestCase {
         let r = runIt("((lambda () 1))")
         XCTAssertEqual(E.IntEl(1), r)
     }
+    
+    func testLambdaWrongArgCount() {
+        let r = runIt("(lambda ())")
+        XCTAssertTrue(r.isError)
+    }
+
+    func testLambdaRequiresListAsFirstArg() {
+        let r = runIt("(lambda 1 2)")
+        XCTAssertTrue(r.isError)
+    }
+    // lambda takes list as first param or error
+    
+    
 }

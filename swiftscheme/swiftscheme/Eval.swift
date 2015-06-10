@@ -53,11 +53,15 @@ public func evalList(elements: [Element], env: Env) -> Element {
 }
 
 public func evalLambda(elements: ArraySlice<Element>, env: Env) -> Element {
-    if elements.count == 2 {
-        return .FunEl(FunctionData(body: Element.NilEl))
-    } else {
-
+    if elements.count != 2 {
+        return .ErrEl("lambda takes two parameters, you passed \(elements)")
     }
+    
+    if !elements[0].isList {
+        return .ErrEl("First argument of lambda must be a list element \(elements)")
+    }
+    
+    return .FunEl(FunctionData(body: elements[1]))
 }
 
 public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class FunctionData : Printable {
+public class FunctionData : Printable, Equatable {
     public var body: Element
     
     public init(body: Element) {
@@ -18,6 +18,10 @@ public class FunctionData : Printable {
     public var description : String {
         return body.description
     }
+}
+
+public func ==(a: FunctionData, b: FunctionData) -> Bool {
+    return a.body == b.body
 }
 
 public enum Element : Printable, Hashable, DebugPrintable {
@@ -68,6 +72,13 @@ public enum Element : Printable, Hashable, DebugPrintable {
         default: return false
         }
     }
+    
+    public var isList: Bool {
+        switch self {
+        case .ListEl: return true
+        default: return false
+        }
+    }
 }
 
 public func ==(a: Element, b: Element) -> Bool {
@@ -77,6 +88,7 @@ public func ==(a: Element, b: Element) -> Bool {
     case (.ListEl(let a), .ListEl(let b)): return a == b
     case (.BoolEl(let a), .BoolEl(let b)): return a == b
     case (.NilEl, .NilEl): return true
+    case (.FunEl(let a), .FunEl(let b)): return a == b
     default: return false
     }
 }

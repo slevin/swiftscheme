@@ -37,7 +37,7 @@ class ElementTests: XCTestCase {
         XCTAssertNotEqual(E.BoolEl(true), E.BoolEl(false))
     }
     
-    func testLestElsEqual() {
+    func testListElsEqual() {
         XCTAssertEqual(E.ListEl([E.IntEl(1), E.SymbolEl("a")]), E.ListEl([.IntEl(1), E.SymbolEl("a")]))
     }
     
@@ -47,6 +47,14 @@ class ElementTests: XCTestCase {
     
     func testDifferentListElsNotEqual() {
         XCTAssertNotEqual(E.ListEl([E.IntEl(1), E.SymbolEl("a")]), E.ListEl([.IntEl(1), E.SymbolEl("b")]))
+    }
+    
+    func testListIsList() {
+        XCTAssertTrue(E.ListEl([E.IntEl(1)]).isList)
+    }
+    
+    func testNotListIsntList() {
+        XCTAssertFalse(E.IntEl(1).isList)
     }
     
     func testNilEqual() {
@@ -84,5 +92,16 @@ class ElementTests: XCTestCase {
     func testCompareWrongTypesIsError() {
         XCTAssertTrue((E.SymbolEl("a") > E.IntEl(5)).isError)
     }
+
+    func testFunTypesEqual() {
+        XCTAssertEqual(E.FunEl(FunctionData(body: E.IntEl(1))), E.FunEl(FunctionData(body: E.IntEl(1))))
+    }
     
+    func testFunTypesNotEqual() {
+        XCTAssertNotEqual(E.FunEl(FunctionData(body: E.IntEl(1))), E.FunEl(FunctionData(body: E.ListEl([E.IntEl(1)]))))
+    }
+    
+    func testFunctionDataEqual() {
+        XCTAssertEqual(FunctionData(body: E.IntEl(1)), FunctionData(body: E.IntEl(1)))
+    }
 }
