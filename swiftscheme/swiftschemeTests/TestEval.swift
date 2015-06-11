@@ -98,7 +98,7 @@ class TestEval: XCTestCase {
     
     func testLambdaReturnsFunEl() {
         let r = runIt("(lambda () 1)")
-        XCTAssertEqual(E.FunEl(FunctionData(body: E.IntEl(1))), r)
+        XCTAssertEqual(E.FunEl(FunctionData(body: E.IntEl(1), args:E.ListEl([]))), r)
     }
     
     func testEvalFunRunsIt() {
@@ -115,7 +115,26 @@ class TestEval: XCTestCase {
         let r = runIt("(lambda 1 2)")
         XCTAssertTrue(r.isError)
     }
-    // lambda takes list as first param or error
     
+    func testLambdaSavesArgs() {
+        let r = runIt("(lambda (a) 1)")
+        switch r {
+        case .FunEl(let f):
+            XCTAssertEqual(E.ListEl([E.SymbolEl("a")]), f.args)
+        default:
+            XCTFail("Must be FunEl")
+        }
+    }
+    
+    func testFunArgsAreAssigned() {
+        let r = runIt("((lambda (a b) (+ a b)) 4 5)")
+        XCTAssertEqual(E.IntEl(9), r)
+    }
+    
+    func testNotMatchingArgumentsIsError() {
+        let r = runIt("((lambda (a b) (+ a b)) 4)")
+        XCTAssertTrue(r.isError)
+    }
+    // test not matching number of arguments
     
 }

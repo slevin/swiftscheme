@@ -40,7 +40,7 @@ public func evalList(elements: [Element], env: Env) -> Element {
         let rest = restUneval.map({ eval($0, env) })
         // the first element should resolve as a method or error (need to do lookup)
         switch f {
-        case .FunEl(let funData): return eval(funData.body, env) // eval function
+        case .FunEl(let funData): return evalFun(funData, rest, env)
         case .SymbolEl("+"): return reduceElements(rest, +)
         case .SymbolEl("-"): return reduceElements(rest, -)
         case .SymbolEl(">"): return evalTwo(rest, >)
@@ -53,16 +53,41 @@ public func evalList(elements: [Element], env: Env) -> Element {
     }
 }
 
+public func evalFun(data: FunctionData, elements: ArraySlice<Element>, env: Env) -> Element {
+    var letArgs = [Element]()
+    var argList = [Element]()
+    
+    switch data.args {
+    case .ListEl(let argElements):
+        if (argElements.count != elements.count) {
+            return .ErrEl("Parameter count and argument count do not match. Should be \(argElements.count)")
+        }
+        for (i, e) in EnumerateSequence(argElements) {
+            argList.append(Element.ListEl([e, elements[i]]))
+        }
+    default:
+        break
+    }
+    letArgs.append(.ListEl(argList))
+    letArgs.append(data.body)
+    let slice = ArraySlice<Element>(letArgs)
+    let result = evalLet(slice, env)
+    return result
+}
+
+
 public func evalLambda(elements: ArraySlice<Element>, env: Env) -> Element {
     if elements.count != 2 {
         return .ErrEl("lambda takes two parameters, you passed \(elements)")
     }
     
-    if !elements[0].isList {
+    let args = elements[0]
+    switch args {
+    case .ListEl:
+        return .FunEl(FunctionData(body:elements[1], args:args))
+    default:
         return .ErrEl("First argument of lambda must be a list element \(elements)")
     }
-    
-    return .FunEl(FunctionData(body: elements[1]))
 }
 
 public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {

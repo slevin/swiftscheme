@@ -94,14 +94,12 @@ class ElementTests: XCTestCase {
     }
 
     func testFunTypesEqual() {
-        XCTAssertEqual(E.FunEl(FunctionData(body: E.IntEl(1))), E.FunEl(FunctionData(body: E.IntEl(1))))
+        XCTAssertEqual(E.FunEl(FunctionData(body: E.IntEl(1), args:E.ListEl([E.SymbolEl("a")]))),
+                       E.FunEl(FunctionData(body: E.IntEl(1), args:E.ListEl([E.SymbolEl("a")]))))
     }
     
     func testFunTypesNotEqual() {
-        XCTAssertNotEqual(E.FunEl(FunctionData(body: E.IntEl(1))), E.FunEl(FunctionData(body: E.ListEl([E.IntEl(1)]))))
+        XCTAssertNotEqual(E.FunEl(FunctionData(body: E.IntEl(1), args: E.ListEl([]))), E.FunEl(FunctionData(body: E.ListEl([E.IntEl(1)]), args: E.ListEl([]))))
     }
     
-    func testFunctionDataEqual() {
-        XCTAssertEqual(FunctionData(body: E.IntEl(1)), FunctionData(body: E.IntEl(1)))
-    }
 }

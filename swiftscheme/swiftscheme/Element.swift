@@ -10,18 +10,20 @@ import Foundation
 
 public class FunctionData : Printable, Equatable {
     public var body: Element
+    public var args: Element // list element
     
-    public init(body: Element) {
+    public init(body: Element, args: Element) {
         self.body = body
+        self.args = args
     }
     
     public var description : String {
-        return body.description
+        return "args:\(args); body:\(body)"
     }
 }
 
 public func ==(a: FunctionData, b: FunctionData) -> Bool {
-    return a.body == b.body
+    return a.body == b.body && a.args == b.args
 }
 
 public enum Element : Printable, Hashable, DebugPrintable {
