@@ -129,14 +129,14 @@ public func evalProgn(elements: ArraySlice<Element>, env: Env) -> Element {
 
 public func evalIf(elements: ArraySlice<Element>, env: Env)  -> Element {
     if elements.count != 3 {
-        return .NilEl
+        return .ErrEl("if function requires 3 arguments.")
     } else {
         if elements[0] == .BoolEl(true) {
             return eval(elements[1], env)
         } else if elements[0] == .BoolEl(false) {
             return eval(elements[2], env)
         } else {
-            return .NilEl
+            return .ErrEl("First argument to if must be boolean.")
         }
     }
 }
@@ -146,7 +146,7 @@ public func storeInEnv(elements: ArraySlice<Element>, env: Env) -> Element {
         env.store(elements[0], value: eval(elements[1], env))
         return elements[1]
     } else {
-        return .NilEl
+        return .ErrEl("Define requires two arguments.")
     }
 }
 
@@ -156,7 +156,7 @@ public func evalTwo(elements: ArraySlice<Element>, reducer: (Element, Element) -
         let e2 = elements[1]
         return reducer(e1, e2)
     } else {
-        return .NilEl
+        return .ErrEl("Two arguments required.")
     }
 }
 

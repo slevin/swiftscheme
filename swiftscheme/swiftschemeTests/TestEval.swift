@@ -135,6 +135,24 @@ class TestEval: XCTestCase {
         let r = runIt("((lambda (a b) (+ a b)) 4)")
         XCTAssertTrue(r.isError)
     }
-    // test not matching number of arguments
+
+    func testCompareNotTwoError() {
+        let r = runIt("(< 1)")
+        XCTAssertTrue(r.isError)
+    }
+
+    func testDefineRequriesTwoArguments() {
+        let r = runIt("(define x)")
+        XCTAssertTrue(r.isError)
+    }
     
+    func testIfRequiresThreeArguments() {
+        let r = runIt("(if #t 1)")
+        XCTAssertTrue(r.isError)
+    }
+    
+    func testIfRequiresBoolFirstArgument() {
+        let r = runIt("(if 1 2 3)")
+        XCTAssertTrue(r.isError)
+    }
 }
