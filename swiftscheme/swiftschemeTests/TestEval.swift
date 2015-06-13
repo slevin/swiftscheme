@@ -155,4 +155,19 @@ class TestEval: XCTestCase {
         let r = runIt("(if 1 2 3)")
         XCTAssertTrue(r.isError)
     }
+    
+    func testIfRequiresEvaledBoolFirstArgument() {
+        let r = runIt("(if (> 1 0) 1 2)")
+        XCTAssertEqual(E.IntEl(1), r)
+    }
+    
+    func testEvalUndefinedFunctionIsError () {
+        let r = runIt("(undefined a b)")
+        XCTAssertTrue(r.isError)
+    }
+    
+    func testRecur() {
+        let r = runIt("((lambda (a acc) (if (= a 0) acc (recur (- a 1) (+ acc a)))) 3 0)")
+        XCTAssertEqual(E.IntEl(6), r)
+    }
 }

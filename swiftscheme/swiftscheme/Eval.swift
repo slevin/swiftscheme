@@ -48,7 +48,7 @@ public func evalList(elements: [Element], env: Env) -> Element {
         case .SymbolEl("="): return evalTwo(rest, eq)
         case .SymbolEl("<"): return evalTwo(rest, <)
         case .SymbolEl("<="): return evalTwo(rest, <=)
-        default: return .NilEl
+        default: return .ErrEl("Undefined function \(f)")
         }
     }
 }
@@ -131,9 +131,10 @@ public func evalIf(elements: ArraySlice<Element>, env: Env)  -> Element {
     if elements.count != 3 {
         return .ErrEl("if function requires 3 arguments.")
     } else {
-        if elements[0] == .BoolEl(true) {
+        let res = eval(elements[0], env)
+        if res == .BoolEl(true) {
             return eval(elements[1], env)
-        } else if elements[0] == .BoolEl(false) {
+        } else if res == .BoolEl(false) {
             return eval(elements[2], env)
         } else {
             return .ErrEl("First argument to if must be boolean.")
