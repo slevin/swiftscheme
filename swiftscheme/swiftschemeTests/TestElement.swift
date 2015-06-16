@@ -102,4 +102,7 @@ class ElementTests: XCTestCase {
         XCTAssertNotEqual(E.FunEl(FunctionData(body: E.IntEl(1), args: E.ListEl([]))), E.FunEl(FunctionData(body: E.ListEl([E.IntEl(1)]), args: E.ListEl([]))))
     }
     
+    func testRecurType() {
+        XCTAssertTrue(E.RecurEl(RecurData(args:E.ListEl([]))).isRecur)
+    }
 }

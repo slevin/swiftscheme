@@ -9,6 +9,8 @@
 import Foundation
 
 public class FunctionData : Printable, Equatable {
+    // class instead of struct to allow recursive enums
+
     public var body: Element
     public var args: Element // list element
     
@@ -26,6 +28,25 @@ public func ==(a: FunctionData, b: FunctionData) -> Bool {
     return a.body == b.body && a.args == b.args
 }
 
+
+public class RecurData : Printable, Equatable {
+    // class instead of struct to allow recursive enums
+    
+    public var args: Element // list element
+    
+    public init(args: Element) {
+        self.args = args
+    }
+    
+    public var description : String {
+        return "args:\(args)"
+    }
+}
+
+public func ==(a: RecurData, b: RecurData) -> Bool {
+    return a.args == b.args
+}
+
 public enum Element : Printable, Hashable, DebugPrintable {
     case SymbolEl(String)
     case IntEl(Int)
@@ -33,6 +54,7 @@ public enum Element : Printable, Hashable, DebugPrintable {
     case ListEl([Element])
     case ErrEl(String)
     case FunEl(FunctionData)
+    case RecurEl(RecurData)
     case NilEl
     
     public var description : String {
@@ -54,6 +76,7 @@ public enum Element : Printable, Hashable, DebugPrintable {
         case .BoolEl(let s): return s ? "#t" : "#f"
         case .ErrEl(let s): return "Error: \(s)"
         case .FunEl(let s): return "Fun(\(s))"
+        case .RecurEl(let s): return "Recur(\(s)"
         }
     }
     
@@ -81,6 +104,13 @@ public enum Element : Printable, Hashable, DebugPrintable {
         default: return false
         }
     }
+    
+    public var isRecur: Bool {
+        switch self {
+        case .RecurEl: return true
+        default: return false
+        }
+    }
 }
 
 public func ==(a: Element, b: Element) -> Bool {
@@ -91,6 +121,7 @@ public func ==(a: Element, b: Element) -> Bool {
     case (.BoolEl(let a), .BoolEl(let b)): return a == b
     case (.NilEl, .NilEl): return true
     case (.FunEl(let a), .FunEl(let b)): return a == b
+    case (.RecurEl(let a), .RecurEl(let b)): return a == b
     default: return false
     }
 }

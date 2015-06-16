@@ -166,6 +166,17 @@ class TestEval: XCTestCase {
         XCTAssertTrue(r.isError)
     }
     
+    func testRecurEval() {
+        let r = runIt("(recur 1 (+ 2 3))")
+        switch r {
+        case .RecurEl(let f):
+            // recur data contains el 1 and el 5
+            XCTAssertEqual(E.RecurEl(RecurData(args:E.ListEl([E.IntEl(1), E.IntEl(5)]))), r)
+        default:
+            XCTFail()
+        }
+    }
+    
     func testRecur() {
         let r = runIt("((lambda (a acc) (if (= a 0) acc (recur (- a 1) (+ acc a)))) 3 0)")
         XCTAssertEqual(E.IntEl(6), r)

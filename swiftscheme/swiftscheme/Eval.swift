@@ -41,6 +41,7 @@ public func evalList(elements: [Element], env: Env) -> Element {
         // the first element should resolve as a method or error (need to do lookup)
         switch f {
         case .FunEl(let funData): return evalFun(funData, rest, env)
+        case .SymbolEl("recur"): return Element.RecurEl(RecurData(args:Element.ListEl(Array(rest))))
         case .SymbolEl("+"): return reduceElements(rest, +)
         case .SymbolEl("-"): return reduceElements(rest, -)
         case .SymbolEl(">"): return evalTwo(rest, >)
