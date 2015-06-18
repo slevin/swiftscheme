@@ -94,26 +94,53 @@ public func evalLambda(elements: ArraySlice<Element>, env: Env) -> Element {
 public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
     // redefine let as a progn of defines and the final function
     if elements.count == 2 {
-        let newEnv = Env(parent: env)
-        var rewritten: [Element] = [Element]()
-        rewritten.append(.SymbolEl("progn"))
         switch elements[0] {
         case .ListEl(let defines):
+            var params = [Element]()
+            var values = [Element]()
+            // separate values and params
             for def in defines {
                 switch def {
                 case .ListEl(let pair):
                     if pair.count == 2 {
-                        rewritten.append(.ListEl([.SymbolEl("define"), pair[0], pair[1]]))
+                        params.append(pair[0])
+                        values.append(pair[1])
+//                        rewritten.append(.ListEl([.SymbolEl("define"), pair[0], pair[1]]))
                     } else {
                         return .NilEl // each subparam must be pair
                     }
                 default: return .NilEl // each subparam must be list
                 }
             }
+
+            
+            
+            while true {
+                let newEnv = Env(parent: env)
+                var rewritten: [Element] = [Element]()
+                rewritten.append(.SymbolEl("progn"))
+                if params.count != values.count {
+                    return .NilEl // params and vals need to match
+                }
+
+                for (i, p) in enumerate(params) {
+                    rewritten.append(.ListEl([.SymbolEl("define"), params[i], values[i]]))
+                }
+                
+                rewritten.append(elements[1]) // append body
+                
+                let result = eval(.ListEl(rewritten), newEnv) // eval new built list
+                switch result {
+                case .RecurEl(let r):
+                    switch r.args {
+                    case .ListEl(let elements): values = elements
+                    default: return .ErrEl("recur data must contain a list of elements")
+                    }
+                default: return result
+                }
+            }
         default: return .NilEl // first param must be list
         }
-        rewritten.append(elements[1])
-        return eval(.ListEl(rewritten), newEnv) // eval new built list
     } else {
         return .NilEl // invalid let params
     }
