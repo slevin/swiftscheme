@@ -105,7 +105,6 @@ public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
                     if pair.count == 2 {
                         params.append(pair[0])
                         values.append(pair[1])
-//                        rewritten.append(.ListEl([.SymbolEl("define"), pair[0], pair[1]]))
                     } else {
                         return .NilEl // each subparam must be pair
                     }
@@ -114,13 +113,13 @@ public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
             }
 
             
-            
+            // loop to handle recur case (otherwise it just runs once)
             while true {
                 let newEnv = Env(parent: env)
                 var rewritten: [Element] = [Element]()
                 rewritten.append(.SymbolEl("progn"))
                 if params.count != values.count {
-                    return .NilEl // params and vals need to match
+                    return .ErrEl("Must have same number of params and arguments.")
                 }
 
                 for (i, p) in enumerate(params) {
@@ -139,10 +138,10 @@ public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
                 default: return result
                 }
             }
-        default: return .NilEl // first param must be list
+        default: return .ErrEl("first parameter of let/define must be a list")
         }
     } else {
-        return .NilEl // invalid let params
+        return .ErrEl("let/define requires parameters and body.")
     }
 }
 

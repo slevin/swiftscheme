@@ -181,4 +181,20 @@ class TestEval: XCTestCase {
         let r = runIt("((lambda (a acc) (if (= a 0) acc (recur (- a 1) (+ acc a)))) 3 0)")
         XCTAssertEqual(E.IntEl(6), r)
     }
+    
+    func testRecurWithWrongElementCountIsError() {
+        let r = runIt("((lambda (a acc) (if (= a 0) acc (recur (- a 1)))) 3 0)")
+        XCTAssertTrue(r.isError)
+        
+    }
+
+    func testLetWithOneParamIsError() {
+        let r = runIt("(let ((a 1)))")
+        XCTAssertTrue(r.isError)
+    }
+    
+    func testLetWithNonListAsFirstParameterIsError() {
+        let r = runIt("(let 1 (+ 2 3))")
+        XCTAssertTrue(r.isError)
+    }
 }
