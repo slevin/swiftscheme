@@ -197,4 +197,14 @@ class TestEval: XCTestCase {
         let r = runIt("(let 1 (+ 2 3))")
         XCTAssertTrue(r.isError)
     }
+    
+    func testLetFirstParamIsListOfLists() {
+        let r = runIt("(let (1) (+ 2 3))")
+        XCTAssertTrue(r.isError)
+    }
+    
+    func testLetFirstParamIsListOf2() {
+        let r = runIt("(let ((1)) (+ 2 3))")
+        XCTAssertTrue(r.isError)
+    }
 }

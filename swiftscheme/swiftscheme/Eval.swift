@@ -106,9 +106,9 @@ public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
                         params.append(pair[0])
                         values.append(pair[1])
                     } else {
-                        return .NilEl // each subparam must be pair
+                        return .ErrEl("Each subparam of let must be a pair.")
                     }
-                default: return .NilEl // each subparam must be list
+                default: return .ErrEl("Each subparam of let must be a list.")
                 }
             }
 
