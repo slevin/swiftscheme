@@ -17,6 +17,10 @@ class ElementTests: XCTestCase {
         XCTAssertEqual(Element.IntEl(1), Element.IntEl(1))
     }
     
+    func testDoubleElsEqual() {
+        XCTAssertEqual(Element.DoubleEl(1.5), Element.DoubleEl(1.5))
+    }
+    
     func testDifferentIntElsNotEqual() {
         XCTAssertNotEqual(Element.IntEl(2), Element.IntEl(1))
     }

@@ -50,6 +50,7 @@ public func ==(a: RecurData, b: RecurData) -> Bool {
 public enum Element : Printable, Hashable, DebugPrintable {
     case SymbolEl(String)
     case IntEl(Int)
+    case DoubleEl(Double)
     case BoolEl(Bool)
     case ListEl([Element])
     case ErrEl(String)
@@ -61,6 +62,7 @@ public enum Element : Printable, Hashable, DebugPrintable {
         switch self {
         case .SymbolEl(let s): return "Symbol: \(s)"
         case .IntEl(let s): return "Int: \(s)"
+        case .DoubleEl(let s): return "Double: \(s)"
         case .ListEl(let s):
             if s.count == 0 {
                 return "[]"
@@ -116,6 +118,7 @@ public enum Element : Printable, Hashable, DebugPrintable {
 public func ==(a: Element, b: Element) -> Bool {
     switch (a, b) {
     case (.IntEl(let a), .IntEl(let b)): return a == b
+    case (.DoubleEl(let a), .DoubleEl(let b)): return a == b
     case (.SymbolEl(let a), .SymbolEl(let b)): return a == b
     case (.ListEl(let a), .ListEl(let b)): return a == b
     case (.BoolEl(let a), .BoolEl(let b)): return a == b
