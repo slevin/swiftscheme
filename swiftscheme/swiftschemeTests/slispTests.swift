@@ -105,6 +105,11 @@ class ParsingTests: XCTestCase {
         let e = parse("()")
         XCTAssertEqual(E.ListEl([]), e)
     }
+    
+    func testParseDouble() {
+        let e = parseWord("1.5")
+        XCTAssertEqual(E.DoubleEl(1.5), e)
+    }
     // test for extra spaces
 
     // test longer words and error cases

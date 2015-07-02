@@ -8,6 +8,12 @@
 
 import Foundation
 
+extension String {
+    func toDouble() -> Double? {
+        return NSNumberFormatter().numberFromString(self)?.doubleValue
+    }
+}
+
 public func parseWord(word: String) -> Element {
     // try to parse as a number if that isn't anything
     if word == "#f" {
@@ -16,6 +22,8 @@ public func parseWord(word: String) -> Element {
         return .BoolEl(true)
     } else if let i = word.toInt() {
         return .IntEl(i)
+    } else if let i = word.toDouble() {
+        return .DoubleEl(i)
     } else {
         return .SymbolEl(word)
     }
