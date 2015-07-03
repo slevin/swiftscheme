@@ -143,6 +143,12 @@ public func -(a: Element, b: Element) -> Element {
     }
 }
 
+public func *(a: Element, b: Element) -> Element {
+    switch (a, b) {
+    case (.IntEl(let a), .IntEl(let b)): return .IntEl(a * b)
+    default: return .ErrEl("Cannot apply \"*\" to \(a) and \(b)")
+    }
+}
 public func intCompare(a: Element, b: Element, comp: (Int, Int) -> Bool) -> Element {
     switch (a, b) {
     case (.IntEl(let a), .IntEl(let b)): return .BoolEl(comp(a, b))

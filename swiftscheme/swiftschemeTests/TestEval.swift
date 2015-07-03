@@ -207,4 +207,9 @@ class TestEval: XCTestCase {
         let r = runIt("(let ((1)) (+ 2 3))")
         XCTAssertTrue(r.isError)
     }
+    
+    func testMultiply() {
+        let r = runIt("(* 4 5)")
+        XCTAssertEqual(E.IntEl(20), r)
+    }
 }
