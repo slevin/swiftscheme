@@ -45,6 +45,7 @@ public func evalList(elements: [Element], env: Env) -> Element {
         case .SymbolEl("+"): return reduceElements(rest, +)
         case .SymbolEl("-"): return reduceElements(rest, -)
         case .SymbolEl("*"): return reduceElements(rest, *)
+        case .SymbolEl("/"): return reduceElements(rest, /)
         case .SymbolEl(">"): return evalTwo(rest, >)
         case .SymbolEl(">="): return evalTwo(rest, >=) // probably all these could be macros on < and =
         case .SymbolEl("="): return evalTwo(rest, eq)

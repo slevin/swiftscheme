@@ -212,4 +212,20 @@ class TestEval: XCTestCase {
         let r = runIt("(* 4 5)")
         XCTAssertEqual(E.IntEl(20), r)
     }
+    
+    func testMultiplyDouble() {
+        let r = runIt("(* 4.0 5.0)")
+        XCTAssertEqual(E.DoubleEl(20), r)
+    }
+    
+    func testDivideInts() {
+        let r = runIt("(/ 20 4)")
+        XCTAssertEqual(E.DoubleEl(5), r)
+    }
+
+    func testDivideDouble() {
+        let r = runIt("(/ 20.0 5.0)")
+        XCTAssertEqual(E.DoubleEl(4), r)
+    }
+    
 }
