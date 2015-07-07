@@ -19,6 +19,8 @@
 		736424231B0588BC002311A5 /* swiftschemeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 736424221B0588BB002311A5 /* swiftschemeTests.swift */; };
 		7364242D1B0588D9002311A5 /* slispTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364242C1B0588D9002311A5 /* slispTests.swift */; };
 		7364242F1B0588F4002311A5 /* Eval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7364242E1B0588F4002311A5 /* Eval.swift */; };
+		73C61C411B4B6C8E00E1A502 /* Typechecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C61C401B4B6C8E00E1A502 /* Typechecker.swift */; };
+		73C61C431B4B6CAC00E1A502 /* TestTypechecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C61C421B4B6CAC00E1A502 /* TestTypechecker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +50,8 @@
 		736424221B0588BB002311A5 /* swiftschemeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swiftschemeTests.swift; sourceTree = "<group>"; };
 		7364242C1B0588D9002311A5 /* slispTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = slispTests.swift; sourceTree = "<group>"; };
 		7364242E1B0588F4002311A5 /* Eval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Eval.swift; sourceTree = "<group>"; };
+		73C61C401B4B6C8E00E1A502 /* Typechecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Typechecker.swift; sourceTree = "<group>"; };
+		73C61C421B4B6CAC00E1A502 /* TestTypechecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTypechecker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +102,7 @@
 				736424131B0588BB002311A5 /* Images.xcassets */,
 				736424151B0588BB002311A5 /* Main.storyboard */,
 				7364240D1B0588BB002311A5 /* Supporting Files */,
+				73C61C401B4B6C8E00E1A502 /* Typechecker.swift */,
 			);
 			path = swiftscheme;
 			sourceTree = "<group>";
@@ -118,6 +123,7 @@
 				736424201B0588BB002311A5 /* Supporting Files */,
 				7322D2481B1FE7D400D2228E /* TestEval.swift */,
 				7322D24A1B21384400D2228E /* TestElement.swift */,
+				73C61C421B4B6CAC00E1A502 /* TestTypechecker.swift */,
 			);
 			path = swiftschemeTests;
 			sourceTree = "<group>";
@@ -234,6 +240,7 @@
 				7364242F1B0588F4002311A5 /* Eval.swift in Sources */,
 				7322D2471B1FDEAC00D2228E /* Env.swift in Sources */,
 				736424101B0588BB002311A5 /* AppDelegate.swift in Sources */,
+				73C61C411B4B6C8E00E1A502 /* Typechecker.swift in Sources */,
 				7322D2451B1FDE4A00D2228E /* Element.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -243,6 +250,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				736424231B0588BC002311A5 /* swiftschemeTests.swift in Sources */,
+				73C61C431B4B6CAC00E1A502 /* TestTypechecker.swift in Sources */,
 				7364242D1B0588D9002311A5 /* slispTests.swift in Sources */,
 				7322D24B1B21384400D2228E /* TestElement.swift in Sources */,
 				7322D2491B1FE7D400D2228E /* TestEval.swift in Sources */,
