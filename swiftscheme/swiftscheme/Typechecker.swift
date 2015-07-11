@@ -8,10 +8,15 @@
 
 import Foundation
 
-public func typecheckIt(code: String) -> Element {
+public enum TypecheckResult {
+    case Success
+    case Failure
+}
+
+public func typecheckIt(code: String) -> TypecheckResult {
     return typecheck(parse(code))
 }
 
-public func typecheck(el: Element) -> Element {
-    return .BoolEl(true)
+public func typecheck(el: Element) -> TypecheckResult  {
+    return .Success
 }

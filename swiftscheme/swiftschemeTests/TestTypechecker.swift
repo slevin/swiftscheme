@@ -12,6 +12,7 @@ import swiftscheme
 
 class TestTypechecker: XCTestCase {
     typealias E = Element
+    typealias T = TypecheckResult
     
     override func setUp() {
         super.setUp()
@@ -25,6 +26,14 @@ class TestTypechecker: XCTestCase {
 
     func testAddChecks() {
         let t = typecheckIt("(+ 1 2)")
-        XCTAssertFalse(t.isError)
+        XCTAssertEqual(t, T.Success)
+    }
+    
+    func testAddNotCheck() {
+        // plus supports only all the same
+        // arguments and must all be int or float
+        // result can be fail or it can be fail with description of some sort
+        let t = typecheckIt("(+ 1 #f)")
+        XCTAssertEqual(t, T.Failure)
     }
 }
