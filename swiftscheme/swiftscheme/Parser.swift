@@ -20,7 +20,7 @@ public func parseWord(word: String) -> Element {
         return .BoolEl(false)
     } else if word == "#t" {
         return .BoolEl(true)
-    } else if let i = word.toInt() {
+    } else if let i = Int(word) {
         return .IntEl(i)
     } else if let i = word.toDouble() {
         return .DoubleEl(i)
@@ -58,7 +58,7 @@ class ParseAccumulator {
     func completeWord(word: String) {
         if self.currentList != nil {
             // don't add nothing
-            if count(word) != 0 {
+            if word.characters.count != 0 {
                 self.currentList!.append(parseWord(word))
             }
         }
@@ -74,9 +74,9 @@ class ParseAccumulator {
 }
 
 public func parse(code: String) -> Element {
-    var accumulator = ParseAccumulator()
+    let accumulator = ParseAccumulator()
     var currentWord = ""
-    for c in code {
+    for c in code.characters {
         if (c == "(") {
             accumulator.decendList()
         } else if (c == " ") {

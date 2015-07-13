@@ -10,7 +10,7 @@ import Foundation
 
 public func runIt(code: String) -> Element {
     let env = Env()
-    return eval(parse(code), env)
+    return eval(parse(code), env: env)
 }
 
 public func evalList(elements: [Element], env: Env) -> Element {
@@ -20,43 +20,43 @@ public func evalList(elements: [Element], env: Env) -> Element {
     } else {
         // eval each element
         // let evaled = elements.map({ eval($0, env) })
-        let f = eval(first(elements)!, env)
+        let f = eval(elements.first!, env: env)
         let restUneval = dropFirst(elements)
         
         // pre eval functions
         if f == .SymbolEl("if") {
-            return evalIf(restUneval, env)
+            return evalIf(restUneval, env: env)
         } else if f == .SymbolEl("progn") {
-            return evalProgn(restUneval, env)
+            return evalProgn(restUneval, env: env)
         } else if f == .SymbolEl("let") {
-            return evalLet(restUneval, env)
+            return evalLet(restUneval, env: env)
         } else if f == .SymbolEl("define") {
-            return storeInEnv(restUneval, env)
+            return storeInEnv(restUneval, env: env)
         } else if f == .SymbolEl("lambda") {
-            return evalLambda(restUneval, env)
+            return evalLambda(restUneval, env: env)
         }
         
         // post eval functions
-        let rest = restUneval.map({ eval($0, env) })
+        let rest = restUneval.map({ eval($0, env: env) })
         // the first element should resolve as a method or error (need to do lookup)
         switch f {
-        case .FunEl(let funData): return evalFun(funData, rest, env)
+        case .FunEl(let funData): return evalFun(funData, elements: rest, env: env)
         case .SymbolEl("recur"): return Element.RecurEl(RecurData(args:Element.ListEl(Array(rest))))
-        case .SymbolEl("+"): return reduceElements(rest, +)
-        case .SymbolEl("-"): return reduceElements(rest, -)
-        case .SymbolEl("*"): return reduceElements(rest, *)
-        case .SymbolEl("/"): return reduceElements(rest, /)
-        case .SymbolEl(">"): return evalTwo(rest, >)
-        case .SymbolEl(">="): return evalTwo(rest, >=) // probably all these could be macros on < and =
-        case .SymbolEl("="): return evalTwo(rest, eq)
-        case .SymbolEl("<"): return evalTwo(rest, <)
-        case .SymbolEl("<="): return evalTwo(rest, <=)
+        case .SymbolEl("+"): return reduceElements(rest, reducer: +)
+        case .SymbolEl("-"): return reduceElements(rest, reducer: -)
+        case .SymbolEl("*"): return reduceElements(rest, reducer: *)
+        case .SymbolEl("/"): return reduceElements(rest, reducer: /)
+        case .SymbolEl(">"): return evalTwo(rest, reducer: >)
+        case .SymbolEl(">="): return evalTwo(rest, reducer: >=) // probably all these could be macros on < and =
+        case .SymbolEl("="): return evalTwo(rest, reducer: eq)
+        case .SymbolEl("<"): return evalTwo(rest, reducer: <)
+        case .SymbolEl("<="): return evalTwo(rest, reducer: <=)
         default: return .ErrEl("Undefined function \(f)")
         }
     }
 }
 
-public func evalFun(data: FunctionData, elements: ArraySlice<Element>, env: Env) -> Element {
+public func evalFun(data: FunctionData, elements: [Element], env: Env) -> Element {
     var letArgs = [Element]()
     var argList = [Element]()
     
@@ -74,7 +74,7 @@ public func evalFun(data: FunctionData, elements: ArraySlice<Element>, env: Env)
     letArgs.append(.ListEl(argList))
     letArgs.append(data.body)
     let slice = ArraySlice<Element>(letArgs)
-    let result = evalLet(slice, env)
+    let result = evalLet(slice, env: env)
     return result
 }
 
@@ -124,13 +124,13 @@ public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
                     return .ErrEl("Must have same number of params and arguments.")
                 }
 
-                for (i, p) in enumerate(params) {
+                for (i, p) in params.enumerate() {
                     rewritten.append(.ListEl([.SymbolEl("define"), params[i], values[i]]))
                 }
                 
                 rewritten.append(elements[1]) // append body
                 
-                let result = eval(.ListEl(rewritten), newEnv) // eval new built list
+                let result = eval(.ListEl(rewritten), env: newEnv) // eval new built list
                 switch result {
                 case .RecurEl(let r):
                     switch r.args {
@@ -149,8 +149,8 @@ public func evalLet(elements: ArraySlice<Element>, env: Env) -> Element {
 
 public func evalProgn(elements: ArraySlice<Element>, env: Env) -> Element {
     var e: Element = .NilEl
-    for (idx, val) in enumerate(elements) {
-        e = eval(val, env)
+    for (idx, val) in elements.enumerate() {
+        e = eval(val, env: env)
     }
     // return last value
     return e
@@ -160,11 +160,11 @@ public func evalIf(elements: ArraySlice<Element>, env: Env)  -> Element {
     if elements.count != 3 {
         return .ErrEl("if function requires 3 arguments.")
     } else {
-        let res = eval(elements[0], env)
+        let res = eval(elements[0], env: env)
         if res == .BoolEl(true) {
-            return eval(elements[1], env)
+            return eval(elements[1], env: env)
         } else if res == .BoolEl(false) {
-            return eval(elements[2], env)
+            return eval(elements[2], env: env)
         } else {
             return .ErrEl("First argument to if must be boolean.")
         }
@@ -173,14 +173,14 @@ public func evalIf(elements: ArraySlice<Element>, env: Env)  -> Element {
 
 public func storeInEnv(elements: ArraySlice<Element>, env: Env) -> Element {
     if elements.count == 2 {
-        env.store(elements[0], value: eval(elements[1], env))
+        env.store(elements[0], value: eval(elements[1], env: env))
         return elements[1]
     } else {
         return .ErrEl("Define requires two arguments.")
     }
 }
 
-public func evalTwo(elements: ArraySlice<Element>, reducer: (Element, Element) -> Element) -> Element {
+public func evalTwo(elements: [Element], reducer: (Element, Element) -> Element) -> Element {
     if elements.count == 2 {
         let e1 = elements[0]
         let e2 = elements[1]
@@ -190,16 +190,16 @@ public func evalTwo(elements: ArraySlice<Element>, reducer: (Element, Element) -
     }
 }
 
-func reduceElements(elements: ArraySlice<Element>, reducer: (Element, Element) -> Element) -> Element {
+func reduceElements(elements: [Element], reducer: (Element, Element) -> Element) -> Element {
     // what is no elements probably an error
-    let f = first(elements)!
+    let f = elements.first!
     let r = dropFirst(elements)
-    return reduce(r, f, reducer)
+    return r.reduce(f, combine: reducer)
 }
 
 public func eval(sexp: Element, env: Env) -> Element {
     switch sexp {
-    case .ListEl(let elements): return evalList(elements, env)
+    case .ListEl(let elements): return evalList(elements, env: env)
     case .SymbolEl:
 // could do a lookup or return self function here
 // need more explaining methods

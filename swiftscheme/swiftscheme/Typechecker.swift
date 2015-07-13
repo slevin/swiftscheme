@@ -25,11 +25,11 @@ public func typecheck(el: Element) -> TypecheckResult  {
 }
 
 public func typecheckList(elements: [Element]) -> TypecheckResult {
-    let f = first(elements)!
+    let f = elements.first!
     let rest = dropFirst(elements)
     
     if f == .SymbolEl("+") {
-        let twoOrMoreArgs = count(rest) >= 2
+        let twoOrMoreArgs = rest.count >= 2
         if !twoOrMoreArgs { return .Failure }
         
         var firstIsNumeric = false
@@ -45,7 +45,7 @@ public func typecheckList(elements: [Element]) -> TypecheckResult {
         // otherwise allsametype = true
         // this is a problem since I don't know how to compare "types"
         // as they are just values which I can check with switch
-        
+        return .Success
     } else {
         return .Failure
     }

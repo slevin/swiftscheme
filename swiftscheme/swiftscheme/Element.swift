@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class FunctionData : Printable, Equatable {
+public class FunctionData : CustomStringConvertible, Equatable {
     // class instead of struct to allow recursive enums
 
     public var body: Element
@@ -29,7 +29,7 @@ public func ==(a: FunctionData, b: FunctionData) -> Bool {
 }
 
 
-public class RecurData : Printable, Equatable {
+public class RecurData : CustomStringConvertible, Equatable {
     // class instead of struct to allow recursive enums
     
     public var args: Element // list element
@@ -47,7 +47,7 @@ public func ==(a: RecurData, b: RecurData) -> Bool {
     return a.args == b.args
 }
 
-public enum Element : Printable, Hashable, DebugPrintable {
+public enum Element : CustomStringConvertible, Hashable, CustomDebugStringConvertible {
     case SymbolEl(String)
     case IntEl(Int)
     case DoubleEl(Double)
@@ -67,7 +67,7 @@ public enum Element : Printable, Hashable, DebugPrintable {
             if s.count == 0 {
                 return "[]"
             } else {
-                let fst = first(s)!
+                let fst = s.first!
                 let rst = dropFirst(s)
                 let els = rst.reduce(fst.description, combine: { (s1: String, s2: Element) -> String in
                     return s1 + ", " + s2.description
@@ -167,11 +167,11 @@ public func intCompare(a: Element, b: Element, comp: (Int, Int) -> Bool) -> Elem
 }
 
 public func >(a: Element, b: Element) -> Element {
-    return intCompare(a, b, >)
+    return intCompare(a, b: b, comp: >)
 }
 
 public func >=(a: Element, b: Element) -> Element {
-    return intCompare(a, b, >=)
+    return intCompare(a, b: b, comp: >=)
 }
 
 public func eq(a: Element, b: Element) -> Element {
@@ -179,10 +179,10 @@ public func eq(a: Element, b: Element) -> Element {
 }
 
 public func <(a: Element, b: Element) -> Element {
-    return intCompare(a, b, <)
+    return intCompare(a, b: b, comp: <)
 }
 
 public func <=(a: Element, b: Element) -> Element {
-    return intCompare(a, b, <=)
+    return intCompare(a, b: b, comp: <=)
 }
 

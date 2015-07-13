@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Env: Printable {
+public class Env: CustomStringConvertible {
     var contents: [Element: Element]
     var parent: Env?
     

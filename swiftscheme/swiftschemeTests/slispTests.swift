@@ -32,13 +32,13 @@ class EnvTests: XCTestCase {
         let e = Env()
         e.store(E.SymbolEl("a"), value: Element.IntEl(1))
         e.store(E.SymbolEl("b"), value: Element.IntEl(2))
-        let r = eval(p, e)
+        let r = eval(p, env: e)
         XCTAssertEqual(E.IntEl(3), r)
     }
     
     func testDefine() {
         let e = Env()
-        let r = eval(parse("(define a 1)"), e)
+        let _ = eval(parse("(define a 1)"), env: e)
         let stored = e.lookup(E.SymbolEl("a"))
         XCTAssertEqual(E.IntEl(1), stored)
     }
@@ -48,7 +48,7 @@ class EnvTests: XCTestCase {
         let e1 = Env()
         e1.store(E.SymbolEl("a"), value: E.IntEl(1))
         let e2 = Env(parent: e1)
-        let r = eval(parse("(+ a 2)"), e2)
+        let r = eval(parse("(+ a 2)"), env: e2)
         XCTAssertEqual(E.IntEl(3), r)
     }
     
